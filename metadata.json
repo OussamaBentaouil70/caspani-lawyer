@@ -1,0 +1,6 @@
+{
+  "name": "Caspani Lawyers - Advocacia Internacional",
+  "description": "Brazilian law firm for international clients, foreign investors, immigration, citizenship, real estate, and cross-border legal services.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
