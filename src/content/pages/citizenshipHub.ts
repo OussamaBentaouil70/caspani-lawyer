@@ -77,7 +77,7 @@ export const citizenshipHub: PageContent = {
     },
     {
       "id": "main-pathways-to-brazilian-citizenship",
-      "kind": "steps",
+      "kind": "cards",
       "eyebrow": "CITIZENSHIP PATHWAYS",
       "title": "Main Pathways to Brazilian Citizenship",
       "items": [
@@ -455,10 +455,6 @@ export const citizenshipHub: PageContent = {
       "items": [
         {
           "title": "Cases That May Require Legal Assessment",
-          "text": [
-            "Not every historical nationality-loss situation requires the same procedure.",
-            "At Caspani Lawyers, we assess the relevant legal history and available documentation to identify the appropriate route."
-          ],
           "bullets": [
             "Previous loss of Brazilian nationality",
             "Historical nationality-loss administrative decisions",
@@ -467,6 +463,10 @@ export const citizenshipHub: PageContent = {
             "Documentation showing the person's original Brazilian nationality"
           ]
         }
+      ],
+      "outro": [
+        "Not every historical nationality-loss situation requires the same procedure.",
+        "At Caspani Lawyers, we assess the relevant legal history and available documentation to identify the appropriate route."
       ],
       "cta": "Discuss Reacquisition of Brazilian Nationality",
       "image": "/images/office-documents.jpg",
@@ -485,9 +485,6 @@ export const citizenshipHub: PageContent = {
       "items": [
         {
           "title": "Important Considerations",
-          "text": [
-            "Before naturalizing, applicants should assess whether acquiring Brazilian citizenship may affect their existing nationality under foreign law."
-          ],
           "bullets": [
             "Brazil may recognize a person as Brazilian while they also hold another nationality.",
             "A second nationality does not automatically eliminate Brazilian nationality.",
@@ -495,6 +492,9 @@ export const citizenshipHub: PageContent = {
             "Travel documentation and consular protection may depend on the circumstances."
           ]
         }
+      ],
+      "outro": [
+        "Before naturalizing, applicants should assess whether acquiring Brazilian citizenship may affect their existing nationality under foreign law."
       ],
       "cta": "Discuss Dual Citizenship",
       "image": "/images/services-desk.jpg",

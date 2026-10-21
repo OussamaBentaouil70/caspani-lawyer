@@ -11,6 +11,7 @@ import { ContentPage } from './components/ContentPage';
 import { findContentPage } from './content/registry';
 import { SERVICES_DATA, findCategoryBySlug, findSubpageBySlugs } from './data/servicesData';
 import { ArrowUp } from 'lucide-react';
+import { WhatsAppIcon } from './components/WhatsAppIcon';
 
 export default function App() {
   const [currentRoute, setCurrentRoute] = useState<string>('home');
@@ -162,7 +163,7 @@ export default function App() {
           title="Chat directly on WhatsApp: +55 (41) 99824-7700"
           className="group relative flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white py-3 px-4 rounded-full shadow-2xl hover:shadow-[0_10px_25px_rgba(37,211,102,0.4)] transition-all duration-300"
         >
-          <span className="material-symbols-outlined text-[24px]">chat</span>
+          <WhatsAppIcon className="w-[24px] h-[24px]" />
           <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline-block pr-1">
             WhatsApp Counsel
           </span>

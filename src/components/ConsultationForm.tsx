@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Send, CheckCircle2, Lock, User, Mail, Phone, Scale, Globe, Languages, CalendarClock } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface ConsultationFormProps {
   id?: string;
@@ -142,7 +143,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
             type="button"
             className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-semibold text-xs uppercase tracking-wider py-3.5 px-4 rounded-lg shadow-md transition-all flex items-center justify-center gap-2"
           >
-            <span className="material-symbols-outlined text-[18px]">chat</span>
+            <WhatsAppIcon className="w-[18px] h-[18px]" />
             <span>Send My Request via WhatsApp</span>
           </button>
           <button

@@ -545,6 +545,20 @@ export const SERVICES_DATA: ServiceCategory[] = [
         ]
       },
       {
+        // Rendered by the content page src/content/pages/acquisition.ts; these fields only feed menus and listings
+        id: "real-estate-acquisition",
+        slug: "real-estate-acquisition",
+        title: "Real Estate Acquisition",
+        shortDescription: "Legal services for foreign individuals, companies and investors acquiring real estate in Brazil.",
+        categorySlug: "real-estate",
+        categoryTitle: "Real Estate Legal Services",
+        eligibility: ["Foreign individuals, companies and investment groups acquiring Brazilian real estate."],
+        steps: [],
+        documents: [],
+        timeline: "",
+        faqs: []
+      },
+      {
         id: "off-plan-properties-na-planta",
         slug: "off-plan-properties-na-planta",
         title: "Off-Plan Properties (Na Planta)",

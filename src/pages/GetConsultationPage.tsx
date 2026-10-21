@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { ConsultationForm } from '../components/ConsultationForm';
 import { FaqAccordion } from '../components/FaqAccordion';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 interface GetConsultationPageProps {
   onNavigate: (route: string) => void;
@@ -247,7 +248,7 @@ export const GetConsultationPage: React.FC<GetConsultationPageProps> = ({ onNavi
                   rel="noopener noreferrer"
                   className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white py-3 px-4 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs transition-colors"
                 >
-                  <span className="material-symbols-outlined text-[18px]">chat</span>
+                  <WhatsAppIcon className="w-[18px] h-[18px]" />
                   <span>WhatsApp: +55 (41) 99824-7700</span>
                 </a>
               </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { SERVICES_DATA } from '../data/servicesData';
 import { ShieldCheck, MapPin, Phone, Clock, Mail, Scale } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface FooterProps {
   onNavigate: (route: string) => void;
@@ -87,7 +88,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <span>Curitiba, Paraná, Brazil</span>
               </p>
               <p className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#775a19] text-[18px]">chat</span>
+                <WhatsAppIcon className="w-[18px] h-[18px] text-[#775a19]" />
                 <a
                   href="https://wa.me/5541998247700"
                   target="_blank"

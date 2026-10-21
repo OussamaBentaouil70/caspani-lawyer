@@ -346,25 +346,29 @@ export const ordinaryNaturalization: PageContent = {
         {
           "title": "One-Year Residence Period",
           "text": [
-            "The qualifying period may be reduced to one year for eligible applicants who:",
-            "The applicable conditions must be satisfied."
+            "The qualifying period may be reduced to one year for eligible applicants who:"
           ],
           "bullets": [
             "Have a Brazilian child",
             "Are married to or in a qualifying stable union with a Brazilian citizen",
             "Originate from a Portuguese-speaking country"
+          ],
+          "note": [
+            "The applicable conditions must be satisfied."
           ]
         },
         {
           "title": "Two-Year Residence Period",
           "text": [
-            "A two-year period may apply in certain legally recognized situations, including:",
-            "These categories have specific requirements and may involve evaluation by the competent authorities."
+            "A two-year period may apply in certain legally recognized situations, including:"
           ],
           "bullets": [
             "Recognized stateless persons",
             "Applicants who have provided or can provide relevant services to Brazil",
             "Applicants distinguished by professional, scientific, or artistic ability"
+          ],
+          "note": [
+            "These categories have specific requirements and may involve evaluation by the competent authorities."
           ]
         },
         {
@@ -586,8 +590,7 @@ export const ordinaryNaturalization: PageContent = {
         {
           "title": "Before Applying",
           "text": [
-            "Foreign nationals should verify:",
-            "Brazilian citizenship and nationality retention under foreign law should be assessed separately."
+            "Foreign nationals should verify:"
           ],
           "bullets": [
             "Whether their country of origin permits dual citizenship",
@@ -596,6 +599,9 @@ export const ordinaryNaturalization: PageContent = {
             "Which passport must be used for particular travel situations"
           ]
         }
+      ],
+      "outro": [
+        "Brazilian citizenship and nationality retention under foreign law should be assessed separately."
       ],
       "cta": "Explore Dual Citizenship Considerations",
       "image": "/images/services-desk.jpg",

@@ -61,7 +61,7 @@ export const digitalNomadVisa: PageContent = {
     },
     {
       "id": "who-qualifies-for-brazil-s-digital-nomad-visa",
-      "kind": "steps",
+      "kind": "cards",
       "eyebrow": "ELIGIBILITY REQUIREMENTS",
       "title": "Who Qualifies for Brazil's Digital Nomad Visa?",
       "intro": [

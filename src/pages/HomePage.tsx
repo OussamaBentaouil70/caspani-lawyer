@@ -18,6 +18,7 @@ import {
   Clock,
   Send
 } from 'lucide-react';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 interface HomePageProps {
   onNavigate: (route: string) => void;
@@ -73,7 +74,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-3.5 rounded-lg text-xs font-bold uppercase tracking-wider border border-[#c5a059]/40 hover:border-[#c5a059] transition-all duration-200"
                 >
-                  <span className="material-symbols-outlined text-[18px] text-[#fed488]">chat</span>
+                  <WhatsAppIcon className="w-[18px] h-[18px] text-[#fed488]" />
                   <span>Contact Us on WhatsApp</span>
                 </a>
               </div>
@@ -788,7 +789,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 rel="noopener noreferrer"
                 className="bg-white/20 hover:bg-white/30 text-white px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider border border-[#c5a059]/40 transition-colors inline-flex items-center gap-2"
               >
-                <span className="material-symbols-outlined text-[18px] text-[#fed488]">chat</span>
+                <WhatsAppIcon className="w-[18px] h-[18px] text-[#fed488]" />
                 <span>Chat With Us Instantly on WhatsApp</span>
               </a>
             </div>
@@ -967,7 +968,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                     rel="noopener noreferrer"
                     className="flex-1 bg-[#25D366] hover:bg-[#20ba59] text-white py-2.5 px-4 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-xs"
                   >
-                    <span className="material-symbols-outlined text-[18px]">chat</span>
+                    <WhatsAppIcon className="w-[18px] h-[18px]" />
                     <span>WhatsApp: +55 (41) 99824-7700</span>
                   </a>
                   <a

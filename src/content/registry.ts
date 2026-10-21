@@ -16,6 +16,35 @@ import { cplpNaturalization } from './pages/cplpNaturalization';
 import { childBornAbroad } from './pages/childBornAbroad';
 import { descentAdults } from './pages/descentAdults';
 import { reacquireCitizenship } from './pages/reacquireCitizenship';
+import { realEstateHub } from './pages/realEstateHub';
+import { purchaseSupport } from './pages/purchaseSupport';
+import { preliminaryReview } from './pages/preliminaryReview';
+import { acquisition } from './pages/acquisition';
+import { offPlan } from './pages/offPlan';
+import { dueDiligence } from './pages/dueDiligence';
+import { holdingStructures } from './pages/holdingStructures';
+import { realEstateDisputes } from './pages/realEstateDisputes';
+import { saleSupport } from './pages/saleSupport';
+import { bankingHub } from './pages/bankingHub';
+import { moneyTransferBrazil } from './pages/moneyTransferBrazil';
+import { bankAccountGuide } from './pages/bankAccountGuide';
+import { escrowServices } from './pages/escrowServices';
+import { estatePlanningHub } from './pages/estatePlanningHub';
+import { lifetimeEstatePlanning } from './pages/lifetimeEstatePlanning';
+import { internationalEstatePlanning } from './pages/internationalEstatePlanning';
+import { lastWillTestament } from './pages/lastWillTestament';
+import { livingWill } from './pages/livingWill';
+import { medicalPowerOfAttorney } from './pages/medicalPowerOfAttorney';
+import { financialPowerOfAttorney } from './pages/financialPowerOfAttorney';
+import { inheritanceHub } from './pages/inheritanceHub';
+import { probateProcess } from './pages/probateProcess';
+import { foreignersInherit } from './pages/foreignersInherit';
+import { transferInheritedFunds } from './pages/transferInheritedFunds';
+import { foreignHeirsHearings } from './pages/foreignHeirsHearings';
+import { localProbateAttorney } from './pages/localProbateAttorney';
+import { inheritanceDisputes } from './pages/inheritanceDisputes';
+import { forcedHeirship } from './pages/forcedHeirship';
+import { searchWills } from './pages/searchWills';
 
 const PAGES: PageContent[] = [
   immigrationHub,
@@ -34,7 +63,36 @@ const PAGES: PageContent[] = [
   cplpNaturalization,
   childBornAbroad,
   descentAdults,
-  reacquireCitizenship
+  reacquireCitizenship,
+  realEstateHub,
+  purchaseSupport,
+  preliminaryReview,
+  acquisition,
+  offPlan,
+  dueDiligence,
+  holdingStructures,
+  realEstateDisputes,
+  saleSupport,
+  bankingHub,
+  moneyTransferBrazil,
+  bankAccountGuide,
+  escrowServices,
+  estatePlanningHub,
+  lifetimeEstatePlanning,
+  internationalEstatePlanning,
+  lastWillTestament,
+  livingWill,
+  medicalPowerOfAttorney,
+  financialPowerOfAttorney,
+  inheritanceHub,
+  probateProcess,
+  foreignersInherit,
+  transferInheritedFunds,
+  foreignHeirsHearings,
+  localProbateAttorney,
+  inheritanceDisputes,
+  forcedHeirship,
+  searchWills
 ];
 
 const BY_ROUTE = new Map<string, PageContent>();

@@ -76,7 +76,7 @@ export const workVisas: PageContent = {
     },
     {
       "id": "main-work-visa-categories-in-brazil",
-      "kind": "steps",
+      "kind": "cards",
       "eyebrow": "TYPES OF WORK VISAS",
       "title": "Main Work Visa Categories in Brazil",
       "intro": [
@@ -279,7 +279,7 @@ export const workVisas: PageContent = {
     },
     {
       "id": "can-you-work-in-brazil-with-a-business-visa",
-      "kind": "text",
+      "kind": "cards",
       "eyebrow": "BUSINESS VISAS VS. WORK VISAS",
       "title": "Can You Work in Brazil With a Business Visa?",
       "intro": [
@@ -304,8 +304,7 @@ export const workVisas: PageContent = {
         {
           "title": "Activities That May Require Work Authorization",
           "text": [
-            "Depending on the facts, these may include:",
-            "The correct classification depends on the substance of the activities, not simply the title of the contract or the duration of the trip."
+            "Depending on the facts, these may include:"
           ],
           "bullets": [
             "Employment by a Brazilian company",
@@ -316,9 +315,10 @@ export const workVisas: PageContent = {
           ]
         }
       ],
-      "cta": "Verify Your Immigration Requirements Before Traveling",
-      "image": "/images/recognition-passport.jpg",
-      "imageAlt": "Brazilian passport on a world map"
+      "outro": [
+        "The correct classification depends on the substance of the activities, not simply the title of the contract or the duration of the trip."
+      ],
+      "cta": "Verify Your Immigration Requirements Before Traveling"
     },
     {
       "id": "who-qualifies-for-a-brazil-work-visa",
@@ -400,8 +400,8 @@ export const workVisas: PageContent = {
         "At Caspani Lawyers, we assess the applicable requirements and provide a personalized document checklist."
       ],
       "cta": "Request Your Legal Consultation",
-      "image": "/images/legal-services.jpg",
-      "imageAlt": "Scales of justice"
+      "image": "/images/recognition-passport.jpg",
+      "imageAlt": "Brazilian passport on a world map"
     },
     {
       "id": "how-to-apply-for-a-brazil-work-visa",
@@ -546,8 +546,8 @@ export const workVisas: PageContent = {
         "Companies should assess these obligations before foreign employees begin working in Brazil."
       ],
       "cta": "Discuss Your Company's Immigration Compliance",
-      "image": "/images/inheritance-probate.jpg",
-      "imageAlt": "Family together"
+      "image": "/images/legal-services.jpg",
+      "imageAlt": "Scales of justice"
     },
     {
       "id": "how-long-can-you-stay-in-brazil-with-a-work-visa",
@@ -604,8 +604,8 @@ export const workVisas: PageContent = {
         "Foreign professionals should not assume that every work-related residence authorization permits unrestricted changes of employer."
       ],
       "cta": "Get Legal Advice Before Changing Employers",
-      "image": "/images/office-documents.jpg",
-      "imageAlt": "Attorney reviewing immigration documents"
+      "image": "/images/inheritance-probate.jpg",
+      "imageAlt": "Family together"
     },
     {
       "id": "can-your-family-join-you-in-brazil",
@@ -627,8 +627,8 @@ export const workVisas: PageContent = {
         "At Caspani Lawyers, we can assist with coordinating work-related immigration applications and qualifying family reunification procedures."
       ],
       "cta": "Explore Family Reunion Visas",
-      "image": "/images/brazil-immigration.jpg",
-      "imageAlt": "Brazilian flag"
+      "image": "/images/office-documents.jpg",
+      "imageAlt": "Attorney reviewing immigration documents"
     },
     {
       "id": "can-a-work-visa-lead-to-permanent-residency-or-c",
@@ -644,8 +644,8 @@ export const workVisas: PageContent = {
         "A work visa does not automatically grant permanent residence or Brazilian citizenship."
       ],
       "cta": "Explore Long-Term Immigration Options",
-      "image": "/images/debt-collection.jpg",
-      "imageAlt": "Business handshake"
+      "image": "/images/brazil-immigration.jpg",
+      "imageAlt": "Brazilian flag"
     },
     {
       "id": "personalized-legal-support-for-foreign-professio",

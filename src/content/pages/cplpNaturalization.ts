@@ -690,8 +690,7 @@ export const cplpNaturalization: PageContent = {
         {
           "title": "Before Naturalizing",
           "text": [
-            "Applicants should verify:",
-            "Brazilian nationality law and foreign nationality law must be considered separately."
+            "Applicants should verify:"
           ],
           "bullets": [
             "Whether their original country permits dual nationality",
@@ -700,6 +699,9 @@ export const cplpNaturalization: PageContent = {
             "Which travel documents should be used when traveling internationally"
           ]
         }
+      ],
+      "outro": [
+        "Brazilian nationality law and foreign nationality law must be considered separately."
       ],
       "cta": "Discuss Your Dual Citizenship Options",
       "image": "/images/services-desk.jpg",

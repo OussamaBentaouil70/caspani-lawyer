@@ -66,7 +66,7 @@ export const childResidency: PageContent = {
     },
     {
       "id": "who-can-apply-for-residency-through-a-brazilian-",
-      "kind": "steps",
+      "kind": "cards",
       "eyebrow": "ELIGIBILITY REQUIREMENTS",
       "title": "Who Can Apply for Residency Through a Brazilian Child?",
       "intro": [

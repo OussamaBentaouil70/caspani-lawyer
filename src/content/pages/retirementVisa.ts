@@ -62,7 +62,7 @@ export const retirementVisa: PageContent = {
     },
     {
       "id": "who-qualifies-for-a-brazil-retirement-visa",
-      "kind": "steps",
+      "kind": "cards",
       "eyebrow": "ELIGIBILITY REQUIREMENTS",
       "title": "Who Qualifies for a Brazil Retirement Visa?",
       "intro": [
@@ -74,8 +74,7 @@ export const retirementVisa: PageContent = {
           "title": "Qualifying Retirement or Pension Income",
           "text": [
             "Applicants must provide evidence of retirement benefits, pension payments, or another legally qualifying retirement-related income source.",
-            "Examples may include:",
-            "Not every form of passive income automatically qualifies as retirement income."
+            "Examples may include:"
           ],
           "bullets": [
             "Government retirement pensions",
@@ -83,6 +82,9 @@ export const retirementVisa: PageContent = {
             "Private or occupational pensions",
             "Survivor's pensions",
             "Other qualifying retirement-related benefits"
+          ],
+          "note": [
+            "Not every form of passive income automatically qualifies as retirement income."
           ]
         },
         {
@@ -158,8 +160,7 @@ export const retirementVisa: PageContent = {
           "title": "Option 1 – Apply Through a Brazilian Consulate",
           "text": [
             "Foreign retirees living outside Brazil may apply for the appropriate temporary retirement visa (VITEM XIV) through a Brazilian embassy or consulate.",
-            "The procedure generally includes:",
-            "Consular requirements and processing times may vary according to the location of the application."
+            "The procedure generally includes:"
           ],
           "bullets": [
             "Reviewing eligibility and retirement income",
@@ -169,6 +170,9 @@ export const retirementVisa: PageContent = {
             "Complying with any additional consular requirements",
             "Traveling to Brazil following visa issuance",
             "Completing the required Federal Police registration"
+          ],
+          "note": [
+            "Consular requirements and processing times may vary according to the location of the application."
           ]
         },
         {

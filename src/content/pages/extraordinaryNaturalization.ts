@@ -63,13 +63,15 @@ export const extraordinaryNaturalization: PageContent = {
         {
           "title": "Main Requirements",
           "text": [
-            "An eligible applicant must generally demonstrate:",
-            "The applicable administrative procedure also requires identification, immigration registration, and supporting documentation."
+            "An eligible applicant must generally demonstrate:"
           ],
           "bullets": [
             "More than 15 years of uninterrupted qualifying residence in Brazil",
             "No disqualifying criminal conviction, or rehabilitation recognized under the applicable law",
             "A formal request for Brazilian naturalization"
+          ],
+          "note": [
+            "The applicable administrative procedure also requires identification, immigration registration, and supporting documentation."
           ]
         },
         {
@@ -736,9 +738,6 @@ export const extraordinaryNaturalization: PageContent = {
       "items": [
         {
           "title": "Important Considerations",
-          "text": [
-            "Brazilian naturalization and the retention of foreign nationality should be assessed separately."
-          ],
           "bullets": [
             "Whether your original country recognizes dual nationality",
             "Whether acquiring Brazilian citizenship affects your original nationality",
@@ -746,6 +745,9 @@ export const extraordinaryNaturalization: PageContent = {
             "Which travel documents you must use in different jurisdictions"
           ]
         }
+      ],
+      "outro": [
+        "Brazilian naturalization and the retention of foreign nationality should be assessed separately."
       ],
       "cta": "Explore Dual Citizenship Considerations",
       "image": "/images/legal-services.jpg",

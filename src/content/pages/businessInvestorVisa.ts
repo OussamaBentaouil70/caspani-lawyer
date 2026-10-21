@@ -94,9 +94,6 @@ export const businessInvestorVisa: PageContent = {
         },
         {
           "title": "Important Investment Conditions",
-          "text": [
-            "Important: Investing the minimum amount does not automatically guarantee residence authorization."
-          ],
           "bullets": [
             "The investment must qualify under the applicable Brazilian immigration regulations.",
             "The investor must demonstrate the lawful origin and transfer of eligible funds.",
@@ -106,6 +103,9 @@ export const businessInvestorVisa: PageContent = {
             "The applicant must meet the applicable personal and immigration requirements."
           ]
         }
+      ],
+      "outro": [
+        "Important: Investing the minimum amount does not automatically guarantee residence authorization."
       ],
       "cta": "Check Your Investment Eligibility"
     },

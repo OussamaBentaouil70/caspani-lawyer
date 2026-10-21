@@ -17,6 +17,7 @@ import {
 import { ConsultationForm } from '../components/ConsultationForm';
 import { FaqAccordion } from '../components/FaqAccordion';
 import { TeamSlider, type TeamMember } from '../components/TeamSlider';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 interface OurFirmPageProps {
   onNavigate: (route: string) => void;
@@ -354,7 +355,7 @@ export const OurFirmPage: React.FC<OurFirmPageProps> = ({ onNavigate }) => {
                 rel="noopener noreferrer"
                 className="bg-white hover:bg-[#f3f3f5] text-[#0f1e36] px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-wider border border-[#c5c6ce] transition-colors inline-flex items-center gap-2"
               >
-                <span className="material-symbols-outlined text-[18px] text-[#25D366]">chat</span>
+                <WhatsAppIcon className="w-[18px] h-[18px] text-[#25D366]" />
                 Contact Caspani Lawyers
               </a>
             </div>

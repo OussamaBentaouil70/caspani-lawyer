@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SERVICES_DATA, ServiceCategory } from '../data/servicesData';
 import { ChevronDown, ChevronRight, Menu, X, ArrowRight } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface HeaderProps {
   currentRoute: string;
@@ -277,7 +278,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             title="Chat directly with attorney on WhatsApp"
             className="hidden sm:inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-semibold uppercase tracking-wider px-3.5 py-2 rounded-lg shadow-sm transition-colors"
           >
-            <span className="material-symbols-outlined text-[16px]">chat</span>
+            <WhatsAppIcon className="w-[16px] h-[16px]" />
             <span>WhatsApp</span>
           </a>
 
@@ -398,7 +399,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
               rel="noopener noreferrer"
               className="w-full bg-[#25D366] text-white py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider text-center flex items-center justify-center gap-2"
             >
-              <span className="material-symbols-outlined text-[16px]">chat</span>
+              <WhatsAppIcon className="w-[16px] h-[16px]" />
               <span>WhatsApp: +55 (41) 99824-7700</span>
             </a>
           </div>

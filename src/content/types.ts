@@ -10,10 +10,20 @@ export interface ContentItem {
   title: string;
   text?: string[];
   bullets?: string[];
+  /** Closing lines shown under the bullets */
+  note?: string[];
   /** Button shown on the card */
   cta?: string;
   /** Page the card (or its button) navigates to; without it the button opens the consultation form */
   route?: string;
+}
+
+export interface ContentTable {
+  caption?: string;
+  headers: string[];
+  rows: string[][];
+  /** Lines shown under the table */
+  note?: string[];
 }
 
 export interface ContentSection {
@@ -29,6 +39,8 @@ export interface ContentSection {
   title?: string;
   intro?: string[];
   bullets?: string[];
+  /** Comparison or example table shown under the intro */
+  table?: ContentTable;
   items?: ContentItem[];
   outro?: string[];
   cta?: string;

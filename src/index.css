@@ -2,8 +2,9 @@
 
 @layer base {
   :root {
-    --font-serif: 'Playfair Display', Georgia, serif;
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    /* Titles: Century Gothic (system font), Didact Gothic as the loaded web fallback */
+    --font-serif: 'Century Gothic', CenturyGothic, 'URW Gothic', 'Didact Gothic', AppleGothic, sans-serif;
+    --font-sans: 'Open Sans', Arial, -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   html {

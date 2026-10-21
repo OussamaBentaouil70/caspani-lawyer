@@ -14,6 +14,7 @@ import {
   Sparkles,
   UserCheck
 } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface SubpageTemplateProps {
   category: ServiceCategory;
@@ -104,7 +105,7 @@ export const SubpageTemplate: React.FC<SubpageTemplateProps> = ({
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider border border-[#c5a059]/40 hover:border-[#c5a059] transition-all duration-200"
                 >
-                  <span className="material-symbols-outlined text-[18px] text-[#fed488]">chat</span>
+                  <WhatsAppIcon className="w-[18px] h-[18px] text-[#fed488]" />
                   <span>WhatsApp Concierge</span>
                 </a>
               </div>
@@ -389,7 +390,7 @@ export const SubpageTemplate: React.FC<SubpageTemplateProps> = ({
                   rel="noopener noreferrer"
                   className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white py-2.5 px-4 rounded-lg text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs transition-colors"
                 >
-                  <span className="material-symbols-outlined text-[16px]">chat</span>
+                  <WhatsAppIcon className="w-[16px] h-[16px]" />
                   <span>Connect with Attorney</span>
                 </a>
               </div>

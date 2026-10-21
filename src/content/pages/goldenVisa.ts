@@ -87,9 +87,6 @@ export const goldenVisa: PageContent = {
         },
         {
           "title": "Important Investment Conditions",
-          "text": [
-            "Important: Purchasing property in Brazil does not automatically grant residency. The investment and applicant must satisfy the applicable legal requirements."
-          ],
           "bullets": [
             "The property must qualify as urban real estate under the applicable regulations.",
             "The investment must be made with eligible funds transferred from abroad.",
@@ -99,6 +96,9 @@ export const goldenVisa: PageContent = {
             "The property transaction must comply with Brazilian real estate and immigration requirements."
           ]
         }
+      ],
+      "outro": [
+        "Important: Purchasing property in Brazil does not automatically grant residency. The investment and applicant must satisfy the applicable legal requirements."
       ],
       "cta": "Check Your Investment Eligibility"
     },

@@ -17,6 +17,7 @@ import {
   Landmark,
   BadgeCheck
 } from 'lucide-react';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 interface ServicesIndexPageProps {
   onNavigate: (route: string) => void;
@@ -269,7 +270,7 @@ export const ServicesIndexPage: React.FC<ServicesIndexPageProps> = ({ onNavigate
                       type="button"
                       className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs uppercase tracking-wider py-3 px-4 rounded-lg flex items-center justify-center gap-2 shadow-md mb-2"
                     >
-                      <span className="material-symbols-outlined text-[18px]">chat</span>
+                      <WhatsAppIcon className="w-[18px] h-[18px]" />
                       <span>Chat Directly on WhatsApp</span>
                     </button>
                     <button
@@ -372,7 +373,7 @@ export const ServicesIndexPage: React.FC<ServicesIndexPageProps> = ({ onNavigate
                       onClick={handleWhatsAppRedirect}
                       className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs uppercase tracking-wider py-3 px-4 rounded-lg shadow-md transition-colors duration-200 flex items-center justify-center gap-2"
                     >
-                      <span className="material-symbols-outlined text-[18px]">chat</span>
+                      <WhatsAppIcon className="w-[18px] h-[18px]" />
                       <span>Chat With Us Instantly on WhatsApp</span>
                     </button>
 

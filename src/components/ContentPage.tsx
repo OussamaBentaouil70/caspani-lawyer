@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
-import { ArrowRight, CheckCircle2, ChevronRight, Lock, Scale, ShieldCheck } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ArrowRight, ChevronRight, Lock, Scale, ShieldCheck } from 'lucide-react';
 import { ConsultationForm } from './ConsultationForm';
 import { FaqAccordion } from './FaqAccordion';
-import type { ContentItem, ContentSection, PageContent } from '../content/types';
+import type { ContentItem, ContentSection, ContentTable, PageContent } from '../content/types';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface ContentPageProps {
   content: PageContent;
@@ -31,37 +32,56 @@ const SECTION_IMAGES: [string, string][] = [
 
 const routeOffset = (route: string) => [...route].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % SECTION_IMAGES.length;
 
-/** Rounded photo with a caption card, used beside section content */
-const SectionImage: React.FC<{ src: string; alt: string; eyebrow?: string; title?: string; className?: string }> = ({
+/** Photo with an offset navy block behind it — the one repeated signature element of the content sections */
+const PhotoFrame: React.FC<{ src: string; alt: string; side?: 'left' | 'right'; className?: string }> = ({
   src,
   alt,
-  eyebrow,
-  title,
-  className = 'h-72 sm:h-96 lg:h-[460px]'
+  side = 'left',
+  className = 'h-72 sm:h-96 lg:h-[480px]'
 }) => (
-  <div className="relative rounded-2xl overflow-hidden shadow-xl border border-[#e2e2e4]">
-    <img src={src} alt={alt} className={`w-full object-cover object-[center_25%] ${className}`} loading="lazy" />
-    {title && (
-      <div className="absolute bottom-4 left-4 right-4 bg-[#0f1e36]/90 backdrop-blur-md text-white p-4 rounded-xl border border-[#c5a059]/30">
-        <span className="text-[10px] uppercase tracking-wider text-[#fed488] block">{eyebrow ?? 'Caspani Lawyers'}</span>
-        <span className="font-serif text-sm font-bold">{title}</span>
-      </div>
-    )}
+  <div className={`relative ${side === 'left' ? 'mr-5 mb-5' : 'ml-5 mb-5'}`}>
+    <div
+      aria-hidden="true"
+      className={`absolute -bottom-5 w-2/3 h-2/3 bg-[#0f1e36] ${side === 'left' ? '-left-5' : '-right-5'}`}
+    ></div>
+    <img src={src} alt={alt} className={`relative w-full object-cover object-[center_25%] ${className}`} loading="lazy" />
   </div>
 );
 
-/** Renders **bold** markup inside an otherwise plain string */
+/** Renders **bold** markup and https:// addresses (as external links) inside an otherwise plain string */
 const Rich: React.FC<{ text: string }> = ({ text }) => (
   <>
-    {text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    {text.split(/(\*\*[^*]+\*\*|https:\/\/[^\s]+[^\s.,;)])/g).map((part, i) =>
       part.startsWith('**') && part.endsWith('**') ? (
         <strong key={i} className="font-semibold text-inherit">{part.slice(2, -2)}</strong>
+      ) : part.startsWith('https://') ? (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#775a19] underline underline-offset-2 break-all hover:text-[#0f1e36]"
+        >
+          {part}
+        </a>
       ) : (
         <React.Fragment key={i}>{part}</React.Fragment>
       )
     )}
   </>
 );
+
+/** Hero copy: consecutive "- " lines form a list (e.g. a "You may be asking:" list); everything else is a paragraph */
+const groupHeroParagraphs = (paragraphs: string[]): (string | string[])[] =>
+  paragraphs.reduce<(string | string[])[]>((blocks, p) => {
+    if (!p.startsWith('- ')) return [...blocks, p];
+    const last = blocks[blocks.length - 1];
+    if (Array.isArray(last)) {
+      last.push(p.slice(2));
+      return blocks;
+    }
+    return [...blocks, [p.slice(2)]];
+  }, []);
 
 const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -84,7 +104,7 @@ const CtaButton: React.FC<{ label: string; target: string; variant?: 'gold' | 'n
   if (isContactCta(label)) {
     return (
       <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={className}>
-        <span className="material-symbols-outlined text-[18px]">chat</span>
+        <WhatsAppIcon className="w-[18px] h-[18px]" />
         <span>{label}</span>
       </a>
     );
@@ -97,29 +117,76 @@ const CtaButton: React.FC<{ label: string; target: string; variant?: 'gold' | 'n
   );
 };
 
-const SectionHeader: React.FC<{ section: ContentSection; dark?: boolean; center?: boolean }> = ({ section, dark, center }) => (
-  <div className={center ? 'text-center max-w-3xl mx-auto mb-12' : 'mb-6'}>
+// ---- Content-section building blocks (everything between the hero and the closing form) ----
+
+const TITLE = 'font-serif font-normal text-[30px] sm:text-[38px] lg:text-[42px] leading-[1.15] tracking-[-0.01em]';
+const BODY = 'text-[15px] leading-[1.75]';
+
+const SectionHeader: React.FC<{ section: ContentSection; dark?: boolean }> = ({ section, dark }) => (
+  <div className="mb-8">
     {section.eyebrow && (
-      <span className={`text-[11px] font-bold uppercase tracking-[0.2em] block mb-2 ${dark ? 'text-[#fed488]' : 'text-[#775a19]'}`}>
+      <span className={`block text-[12px] font-semibold tracking-[0.08em] mb-3 ${dark ? 'text-[#e9c176]' : 'text-[#775a19]'}`}>
         {section.eyebrow}
       </span>
     )}
-    {section.title && (
-      <h2 className={`font-serif text-3xl sm:text-4xl font-bold mb-4 ${dark ? 'text-white' : 'text-[#0f1e36]'}`}>{section.title}</h2>
-    )}
+    {section.title && <h2 className={`${TITLE} mb-5 ${dark ? 'text-white' : 'text-[#0f1e36]'}`}>{section.title}</h2>}
     {section.intro?.map((p) => (
-      <p key={p} className={`text-sm sm:text-base leading-relaxed mb-3 ${dark ? 'text-[#edeef0]' : 'text-[#44474d]'}`}>
+      <p key={p} className={`${BODY} max-w-[68ch] mb-3 ${dark ? 'text-[#d8dbe2]' : 'text-[#44474d]'}`}>
         <Rich text={p} />
+      </p>
+    ))}
+    {section.table && <SectionTable table={section.table} />}
+  </div>
+);
+
+const SectionTable: React.FC<{ table: ContentTable }> = ({ table }) => (
+  <div className="mt-8 max-w-4xl">
+    {table.caption && (
+      <p className="text-[12px] font-semibold tracking-[0.08em] uppercase text-[#775a19] mb-3">{table.caption}</p>
+    )}
+    <div className="overflow-x-auto bg-white border border-[#e2e2e4] border-t-2 border-t-[#775a19]">
+      <table className="w-full min-w-[520px] text-left border-collapse">
+        <thead>
+          <tr className="bg-[#0f1e36]">
+            {table.headers.map((h) => (
+              <th key={h} scope="col" className="px-5 py-3.5 text-[12px] font-semibold tracking-[0.06em] uppercase text-[#e9c176]">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {table.rows.map((row) => (
+            <tr key={row.join('|')} className="border-t border-[#e2e2e4] even:bg-[#f8f9fa]">
+              {row.map((cell, c) =>
+                c === 0 ? (
+                  <th key={c} scope="row" className="px-5 py-4 font-serif font-normal text-[16px] text-[#0f1e36] align-top">
+                    <Rich text={cell} />
+                  </th>
+                ) : (
+                  <td key={c} className="px-5 py-4 text-[15px] leading-relaxed text-[#44474d] align-top">
+                    <Rich text={cell} />
+                  </td>
+                )
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    {table.note?.map((p, i) => (
+      <p key={p} className={`${BODY} max-w-[68ch] ${i === 0 ? 'mt-4' : 'mt-2'} text-[#44474d]`}>
+        <Rich text={p.replace(/^(Important:)/, '**$1**')} />
       </p>
     ))}
   </div>
 );
 
 const BulletList: React.FC<{ bullets: string[]; dark?: boolean; columns?: boolean }> = ({ bullets, dark, columns }) => (
-  <ul className={`grid gap-2.5 mb-6 ${columns ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+  <ul className={`grid gap-x-8 gap-y-2.5 mb-6 ${columns ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
     {bullets.map((b) => (
-      <li key={b} className={`flex items-start gap-2.5 text-sm leading-relaxed ${dark ? 'text-[#edeef0]' : 'text-[#1a1c1d]'}`}>
-        <CheckCircle2 className={`w-4.5 h-4.5 shrink-0 mt-0.5 ${dark ? 'text-[#fed488]' : 'text-[#775a19]'}`} />
+      <li key={b} className={`flex items-start gap-3 text-[15px] leading-relaxed ${dark ? 'text-[#edeef0]' : 'text-[#1a1c1d]'}`}>
+        <span aria-hidden="true" className={`w-3 h-px mt-[0.8em] shrink-0 ${dark ? 'bg-[#e9c176]' : 'bg-[#775a19]'}`}></span>
         <span>
           <Rich text={b} />
         </span>
@@ -128,133 +195,391 @@ const BulletList: React.FC<{ bullets: string[]; dark?: boolean; columns?: boolea
   </ul>
 );
 
-const Outro: React.FC<{ section: ContentSection; dark?: boolean; center?: boolean; onNavigate: (route: string) => void }> = ({
+/** Compact square-cornered button used inside content sections */
+const SectionButton: React.FC<{ label: string; onClick?: () => void; dark?: boolean }> = ({ label, onClick, dark }) => {
+  const className = `inline-flex items-center gap-2.5 px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.06em] transition-colors cursor-pointer ${
+    dark ? 'bg-[#e9c176] text-[#0f1e36] hover:bg-white' : 'bg-[#0f1e36] text-white hover:bg-[#775a19]'
+  }`;
+  if (isContactCta(label)) {
+    return (
+      <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={className}>
+        <WhatsAppIcon className="w-4 h-4" />
+        <span>{label}</span>
+      </a>
+    );
+  }
+  return (
+    <button type="button" onClick={onClick ?? (() => scrollToId('bottom-form'))} className={className}>
+      <span>{label}</span>
+      <ArrowRight className="w-4 h-4" />
+    </button>
+  );
+};
+
+const Outro: React.FC<{ section: ContentSection; dark?: boolean; onNavigate: (route: string) => void }> = ({
   section,
   dark,
-  center,
   onNavigate
 }) => (
   <>
-    {section.outro?.map((p) => (
-      <p
-        key={p}
-        className={`text-sm leading-relaxed mb-3 ${center ? 'text-center max-w-3xl mx-auto' : ''} ${dark ? 'text-[#edeef0]' : 'text-[#44474d]'}`}
-      >
-        <Rich text={p} />
-      </p>
-    ))}
+    {section.outro?.map((p) =>
+      // A lone closing sentence or an "Important:" note is the section's key statement: give it a gold rule
+      !dark && (/^Important:/i.test(p) || section.outro!.length === 1) ? (
+        <p
+          key={p}
+          className="max-w-[60ch] my-4 border-l-2 border-[#775a19] pl-5 font-serif text-[18px] sm:text-[19px] leading-[1.6] text-[#0f1e36]"
+        >
+          <Rich text={p} />
+        </p>
+      ) : (
+        <p key={p} className={`${BODY} max-w-[68ch] mb-3 ${dark ? 'text-[#d8dbe2]' : 'text-[#44474d]'}`}>
+          <Rich text={p} />
+        </p>
+      )
+    )}
     {section.cta && (
-      <div className={`mt-4 ${center ? 'text-center' : ''}`}>
-        {section.ctaRoute ? (
-          <button
-            type="button"
-            onClick={() => onNavigate(section.ctaRoute!)}
-            className={`inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
-              dark ? 'bg-[#e9c176] hover:bg-[#c5a059] text-[#121c2b]' : 'bg-[#0f1e36] hover:bg-[#775a19] text-white'
-            }`}
-          >
-            <span>{section.cta}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        ) : (
-          <CtaButton label={section.cta} target="bottom-form" variant={dark ? 'gold' : 'navy'} />
-        )}
+      <div className="mt-6">
+        <SectionButton
+          label={section.cta}
+          dark={dark}
+          onClick={section.ctaRoute ? () => onNavigate(section.ctaRoute!) : undefined}
+        />
       </div>
     )}
   </>
 );
 
-const ItemCard: React.FC<{ item: ContentItem; dark?: boolean; onNavigate: (route: string) => void }> = ({ item, dark, onNavigate }) => (
-  <div
-    className={`rounded-xl p-6 border transition-all flex flex-col ${
-      dark
-        ? 'bg-white/10 border-white/15 hover:border-[#fed488]/60'
-        : 'bg-white border-[#e2e2e4] hover:border-[#c5a059]/60 shadow-xs hover:shadow-md'
-    }`}
-  >
-    <div className={`w-8 h-[2px] mb-4 ${dark ? 'bg-[#fed488]' : 'bg-[#775a19]'}`}></div>
-    <h3 className={`font-serif text-lg font-bold mb-2 leading-snug ${dark ? 'text-white' : 'text-[#0f1e36]'}`}>
-      <Rich text={item.title} />
-    </h3>
+const ItemBody: React.FC<{ item: ContentItem; dark?: boolean; onNavigate: (route: string) => void }> = ({ item, dark, onNavigate }) => (
+  <>
     {item.text?.map((t) => (
-      <p key={t} className={`text-sm leading-relaxed mb-2 ${dark ? 'text-[#edeef0]' : 'text-[#44474d]'}`}>
+      <p key={t} className={`${BODY} mb-2 ${dark ? 'text-[#d8dbe2]' : 'text-[#44474d]'}`}>
         <Rich text={t} />
       </p>
     ))}
     {item.bullets && item.bullets.length > 0 && (
-      <ul className="mt-2 space-y-1.5">
-        {item.bullets.map((b) => (
-          <li key={b} className={`flex items-start gap-2 text-sm ${dark ? 'text-[#edeef0]' : 'text-[#1a1c1d]'}`}>
-            <span className={dark ? 'text-[#fed488]' : 'text-[#775a19]'}>◆</span>
-            <span>
-              <Rich text={b} />
-            </span>
-          </li>
-        ))}
-      </ul>
+      <div className="mt-3">
+        <BulletList bullets={item.bullets} dark={dark} />
+      </div>
     )}
+    {item.note?.map((t) => (
+      <p key={t} className={`${BODY} mt-3 ${dark ? 'text-[#d8dbe2]' : 'text-[#44474d]'}`}>
+        <Rich text={t} />
+      </p>
+    ))}
     {item.cta && (
       <button
         type="button"
         onClick={() => (item.route ? onNavigate(item.route) : scrollToId('bottom-form'))}
-        className={`mt-auto pt-4 text-left text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 cursor-pointer transition-colors ${
-          dark ? 'text-[#fed488] hover:text-white' : 'text-[#775a19] hover:text-[#0f1e36]'
+        className={`mt-2 inline-flex items-center gap-1.5 text-[13px] font-semibold cursor-pointer underline-offset-4 hover:underline ${
+          dark ? 'text-[#e9c176]' : 'text-[#775a19]'
         }`}
       >
         <span>{item.cta}</span>
         <ArrowRight className="w-3.5 h-3.5" />
       </button>
     )}
+  </>
+);
+
+/** Items as a divided list beside a sticky heading (replaces card grids) */
+const CardsList: React.FC<{ section: ContentSection; image: string; imageAlt: string; dark: boolean; onNavigate: (route: string) => void }> = ({
+  section,
+  image,
+  imageAlt,
+  dark,
+  onNavigate
+}) => (
+  <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+    <div className="lg:col-span-5 lg:sticky lg:top-28">
+      <SectionHeader section={section} dark={dark} />
+      {!dark && <PhotoFrame src={image} alt={imageAlt} className="h-56 sm:h-72" />}
+      <div className={dark ? '' : 'mt-10'}>
+        <Outro section={section} dark={dark} onNavigate={onNavigate} />
+      </div>
+    </div>
+    <div className="lg:col-span-7">
+      {section.bullets && <BulletList bullets={section.bullets} dark={dark} columns />}
+      <ul className={dark ? 'grid grid-cols-1 md:grid-cols-2 gap-x-10' : ''}>
+        {section.items?.map((item) => (
+          <li key={item.title} className={`py-7 border-t ${dark ? 'border-white/15' : 'border-[#d9dbe0]'}`}>
+            <h3 className={`font-serif font-normal text-[21px] leading-snug mb-2.5 ${dark ? 'text-white' : 'text-[#0f1e36]'}`}>
+              <Rich text={item.title} />
+            </h3>
+            <ItemBody item={item} dark={dark} onNavigate={onNavigate} />
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
 );
 
-const gridCols = (count: number) =>
-  count === 4 || count === 2 ? 'md:grid-cols-2' : count % 3 === 0 || count > 4 ? 'md:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-2';
+/** Items as tabs beside a photo, used on alternate card sections to vary the rhythm */
+const CardsTabs: React.FC<{ section: ContentSection; image: string; imageAlt: string; onNavigate: (route: string) => void }> = ({
+  section,
+  image,
+  imageAlt,
+  onNavigate
+}) => {
+  const items = section.items ?? [];
+  const [active, setActive] = useState(0);
+  const current = items[active];
+
+  // Standard tab keyboard behaviour: arrows move the selection, Home/End jump to the ends
+  const selectAndFocus = (index: number) => {
+    const next = (index + items.length) % items.length;
+    setActive(next);
+    document.getElementById(`${section.id}-tab-${next}`)?.focus();
+  };
+  const onTabKeyDown = (e: React.KeyboardEvent, index: number) => {
+    const moves: Record<string, number> = { ArrowRight: index + 1, ArrowDown: index + 1, ArrowLeft: index - 1, ArrowUp: index - 1, Home: 0, End: items.length - 1 };
+    if (e.key in moves) {
+      e.preventDefault();
+      selectAndFocus(moves[e.key]);
+    }
+  };
+
+  return (
+    <>
+      <div className="max-w-3xl">
+        <SectionHeader section={section} />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+        <div className="lg:col-span-5">
+          <PhotoFrame src={image} alt={imageAlt} />
+        </div>
+        <div className="lg:col-span-7">
+          <div role="tablist" aria-label={section.title ?? 'Topics'} className="flex flex-wrap gap-x-3 gap-y-3 mb-10">
+            {items.map((item, i) => (
+              <button
+                key={item.title}
+                type="button"
+                role="tab"
+                id={`${section.id}-tab-${i}`}
+                aria-selected={active === i}
+                aria-controls={`${section.id}-panel`}
+                tabIndex={active === i ? 0 : -1}
+                onClick={() => setActive(i)}
+                onKeyDown={(e) => onTabKeyDown(e, i)}
+                title={item.title}
+                className={`max-w-full truncate whitespace-nowrap px-4 py-2.5 text-[14px] leading-5 border-b-2 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#775a19] ${
+                  active === i
+                    ? 'bg-[#0f1e36] text-white border-[#0f1e36]'
+                    : 'bg-transparent text-[#5f6368] border-[#c5c6ce] hover:text-[#0f1e36] hover:border-[#0f1e36]'
+                }`}
+              >
+                {item.title}
+              </button>
+            ))}
+          </div>
+          {current && (
+            <div role="tabpanel" id={`${section.id}-panel`} aria-labelledby={`${section.id}-tab-${active}`}>
+              <h3 className="font-serif font-normal text-[26px] leading-snug text-[#0f1e36] mb-4">
+                <Rich text={current.title} />
+              </h3>
+              <ItemBody item={current} onNavigate={onNavigate} />
+            </div>
+          )}
+          {section.bullets && (
+            <div className="mt-6">
+              <BulletList bullets={section.bullets} columns />
+            </div>
+          )}
+          <div className="mt-6">
+            <Outro section={section} onNavigate={onNavigate} />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+type CardsVariant = 'list' | 'cards' | 'tabs' | 'index' | 'mosaic';
+
+const avgTextLength = (items: ContentItem[]) =>
+  items.reduce((sum, it) => sum + (it.text ?? []).join(' ').length, 0) / Math.max(items.length, 1);
+
+/** Whether a layout suits a section's shape: tabs need few, substantial items; compact layouts need short ones */
+const suits = (section: ContentSection, variant: CardsVariant) => {
+  const items = section.items ?? [];
+  const n = items.length;
+  const hasBullets = items.some((it) => it.bullets?.length);
+  const hasCtas = items.some((it) => it.cta);
+  const short = avgTextLength(items) < 140;
+  switch (variant) {
+    case 'tabs':
+      return n >= 3 && n <= 6 && (hasBullets || avgTextLength(items) >= 90);
+    case 'index':
+      return n >= 4 && !hasBullets && !hasCtas && short;
+    case 'mosaic':
+      return n >= 4 && n <= 10 && !hasBullets && short;
+    default:
+      return true;
+  }
+};
+
+/** Picks a layout per card section, cycling through the rotation and skipping layouts that don't fit the content */
+const pickCardsVariants = (sections: ContentSection[]): CardsVariant[] => {
+  const ROTATION: CardsVariant[] = ['list', 'index', 'cards', 'mosaic', 'tabs'];
+  let pointer = 0;
+  return sections.map((s) => {
+    if (s.kind !== 'cards') return 'list';
+    for (let tries = 0; tries < ROTATION.length; tries++) {
+      const candidate = ROTATION[(pointer + tries) % ROTATION.length];
+      if (suits(s, candidate)) {
+        pointer = (pointer + tries + 1) % ROTATION.length;
+        return candidate;
+      }
+    }
+    return 'list';
+  });
+};
+
+/** Editorial index: term on the left, explanation on the right, hairline rules between rows */
+const CardsIndex: React.FC<{ section: ContentSection; onNavigate: (route: string) => void }> = ({ section, onNavigate }) => (
+  <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+    <div className="lg:col-span-4 lg:sticky lg:top-28">
+      <SectionHeader section={section} />
+      <Outro section={section} onNavigate={onNavigate} />
+    </div>
+    <dl className="lg:col-span-8 border-b border-[#d9dbe0]">
+      {section.bullets && (
+        <div className="pb-6">
+          <BulletList bullets={section.bullets} columns />
+        </div>
+      )}
+      {section.items?.map((item) => (
+        <div key={item.title} className="grid grid-cols-1 sm:grid-cols-[minmax(0,15rem)_1fr] gap-x-10 gap-y-1.5 py-5 border-t border-[#d9dbe0]">
+          <dt className="font-serif text-[18px] leading-snug text-[#0f1e36]">
+            <Rich text={item.title} />
+          </dt>
+          <dd className={`${BODY} text-[#44474d]`}>
+            {item.text?.map((t) => (
+              <span key={t} className="block">
+                <Rich text={t} />
+              </span>
+            ))}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+);
+
+/** Tall photo carrying the section title in large type; items in two columns under fine gold rules */
+const CardsMosaic: React.FC<{ section: ContentSection; image: string; imageAlt: string; onNavigate: (route: string) => void }> = ({
+  section,
+  image,
+  imageAlt,
+  onNavigate
+}) => (
+  <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-stretch">
+    <div className="lg:col-span-5 relative min-h-[340px] lg:min-h-[560px] overflow-hidden">
+      <img src={image} alt={imageAlt} className="absolute inset-0 w-full h-full object-cover object-[center_25%]" loading="lazy" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0f1e36] via-[#0f1e36]/55 to-[#0f1e36]/5"></div>
+      <div className="absolute inset-x-0 bottom-0 p-7 lg:p-9">
+        {section.eyebrow && (
+          <span className="block text-[12px] font-semibold tracking-[0.08em] text-[#e9c176] mb-3">{section.eyebrow}</span>
+        )}
+        {section.title && (
+          <h2 className="font-serif font-normal text-white text-[30px] sm:text-[36px] lg:text-[40px] leading-[1.12] tracking-[-0.01em]">
+            {section.title}
+          </h2>
+        )}
+      </div>
+    </div>
+    <div className="lg:col-span-7 flex flex-col justify-center">
+      {section.intro?.map((p) => (
+        <p key={p} className={`${BODY} max-w-[68ch] mb-3 text-[#44474d]`}>
+          <Rich text={p} />
+        </p>
+      ))}
+      {section.table && <SectionTable table={section.table} />}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-7 mt-6">
+        {section.items?.map((item) => (
+          <div key={item.title} className="border-t border-[#c9a45c] pt-4">
+            <h3 className="font-serif font-normal text-[18px] leading-snug text-[#0f1e36] mb-1.5">
+              <Rich text={item.title} />
+            </h3>
+            <ItemBody item={item} onNavigate={onNavigate} />
+          </div>
+        ))}
+      </div>
+      <div className="mt-8">
+        <Outro section={section} onNavigate={onNavigate} />
+      </div>
+    </div>
+  </div>
+);
+
+/** Items as a grid of square-cornered cards, used on every third card section */
+const CardsGrid: React.FC<{ section: ContentSection; onNavigate: (route: string) => void }> = ({ section, onNavigate }) => {
+  const count = section.items?.length ?? 0;
+  const cols = count === 2 || count === 4 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3';
+  return (
+    <>
+      <div className="max-w-3xl">
+        <SectionHeader section={section} />
+      </div>
+      <div className={`grid grid-cols-1 ${cols} gap-6`}>
+        {section.items?.map((item) => (
+          <article key={item.title} className="bg-white border border-[#e2e2e4] border-t-2 border-t-[#775a19] p-7 flex flex-col">
+            <h3 className="font-serif font-normal text-[21px] leading-snug text-[#0f1e36] mb-3">
+              <Rich text={item.title} />
+            </h3>
+            <ItemBody item={item} onNavigate={onNavigate} />
+          </article>
+        ))}
+      </div>
+      {section.bullets && (
+        <div className="mt-10">
+          <BulletList bullets={section.bullets} columns />
+        </div>
+      )}
+      <div className="mt-8">
+        <Outro section={section} onNavigate={onNavigate} />
+      </div>
+    </>
+  );
+};
 
 const Section: React.FC<{
   section: ContentSection;
   index: number;
+  /** Card sections rotate between a divided list, a card grid and tabs */
+  cardsVariant: CardsVariant;
   fallbackImage: [string, string];
   onNavigate: (route: string) => void;
-}> = ({ section, index, fallbackImage, onNavigate }) => {
+}> = ({ section, index, cardsVariant, fallbackImage, onNavigate }) => {
   const image = section.image ?? fallbackImage[0];
   const imageAlt = section.imageAlt ?? (section.image ? section.title ?? '' : fallbackImage[1]);
-  // "Why choose us" sections get the dark navy treatment
+  // "Why choose us" sections are the one navy band in the middle of the page
   const dark = /why (choose|clients|retirees)/i.test(`${section.eyebrow ?? ''} ${section.title ?? ''}`) && section.kind === 'cards';
-  const bg = dark ? 'bg-[#0f1e36]' : index % 2 === 0 ? 'bg-white' : 'bg-[#f9f9fb]';
-  const wrapper = `w-full ${bg} py-16 lg:py-24 border-b border-[#e2e2e4]`;
+  const bg = dark ? 'bg-[#0f1e36]' : index % 2 === 0 ? 'bg-white' : 'bg-[#f4f5f7]';
+  const wrapper = `w-full ${bg} py-20 lg:py-28`;
+  const inner = 'max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-12';
 
   if (section.kind === 'text') {
     const imageLeft = index % 4 === 0;
-    const body = (
-      <div>
-        <SectionHeader section={section} />
-        {section.items?.map((item) => (
-          <div key={item.title} className="mb-5">
-            <h3 className="font-serif text-lg font-bold text-[#0f1e36] mb-2">
-              <Rich text={item.title} />
-            </h3>
-            {item.text?.map((t) => (
-              <p key={t} className="text-sm sm:text-base text-[#44474d] leading-relaxed mb-2">
-                <Rich text={t} />
-              </p>
-            ))}
-            {item.bullets && <BulletList bullets={item.bullets} />}
-          </div>
-        ))}
-        {section.bullets && <BulletList bullets={section.bullets} />}
-        <Outro section={section} onNavigate={onNavigate} />
-      </div>
-    );
-
     return (
       <section className={wrapper} id={section.id}>
-        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <div className={inner}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className={`lg:col-span-5 ${imageLeft ? '' : 'lg:order-2'}`}>
-              <SectionImage src={image} alt={imageAlt} eyebrow={section.eyebrow} title={section.title} />
+              <PhotoFrame src={image} alt={imageAlt} side={imageLeft ? 'left' : 'right'} />
             </div>
-            <div className="lg:col-span-7">{body}</div>
+            <div className="lg:col-span-7">
+              <SectionHeader section={section} />
+              {section.items?.map((item) => (
+                <div key={item.title} className="mb-6">
+                  <h3 className="font-serif font-normal text-[21px] leading-snug text-[#0f1e36] mb-2">
+                    <Rich text={item.title} />
+                  </h3>
+                  <ItemBody item={item} onNavigate={onNavigate} />
+                </div>
+              ))}
+              {section.bullets && <BulletList bullets={section.bullets} />}
+              <Outro section={section} onNavigate={onNavigate} />
+            </div>
           </div>
         </div>
       </section>
@@ -264,41 +589,36 @@ const Section: React.FC<{
   if (section.kind === 'steps') {
     return (
       <section className={wrapper} id={section.id}>
-        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        <div className={inner}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             <div className="lg:col-span-5 lg:sticky lg:top-28">
-              <SectionImage
-                src={image}
-                alt={imageAlt}
-                eyebrow={section.eyebrow}
-                title={section.title}
-                className="h-64 sm:h-80 lg:h-[520px]"
-              />
+              <SectionHeader section={section} />
+              <div className="hidden lg:block">
+                <PhotoFrame src={image} alt={imageAlt} className="h-72" />
+              </div>
             </div>
             <div className="lg:col-span-7">
-              <SectionHeader section={section} />
-              <ol className="space-y-4 mb-8">
+              <ol className="relative border-l border-[#c5c6ce] ml-5">
                 {section.items?.map((item, i) => (
-                  <li key={item.title} className="flex gap-5 bg-white rounded-xl p-6 border border-[#e2e2e4] shadow-xs">
-                    <span className="w-11 h-11 rounded-full bg-[#0f1e36] text-[#fed488] font-serif text-lg font-bold flex items-center justify-center shrink-0">
+                  <li key={item.title} className="relative pl-10 pb-10 last:pb-0">
+                    <span className="absolute -left-5 top-0 w-10 h-10 rounded-full bg-white border border-[#775a19] text-[#775a19] font-serif text-[16px] flex items-center justify-center">
                       {i + 1}
                     </span>
-                    <div>
-                      <h3 className="font-serif text-lg font-bold text-[#0f1e36] mb-1">
-                        <Rich text={item.title} />
-                      </h3>
-                      {item.text?.map((t) => (
-                        <p key={t} className="text-sm text-[#44474d] leading-relaxed mb-1">
-                          <Rich text={t} />
-                        </p>
-                      ))}
-                      {item.bullets && <BulletList bullets={item.bullets} />}
-                    </div>
+                    <h3 className="font-serif font-normal text-[21px] leading-snug text-[#0f1e36] pt-1.5 mb-2">
+                      <Rich text={item.title} />
+                    </h3>
+                    <ItemBody item={item} onNavigate={onNavigate} />
                   </li>
                 ))}
               </ol>
-              {section.bullets && <BulletList bullets={section.bullets} columns />}
-              <Outro section={section} onNavigate={onNavigate} />
+              {section.bullets && (
+                <div className="mt-10">
+                  <BulletList bullets={section.bullets} columns />
+                </div>
+              )}
+              <div className="mt-8">
+                <Outro section={section} onNavigate={onNavigate} />
+              </div>
             </div>
           </div>
         </div>
@@ -309,74 +629,62 @@ const Section: React.FC<{
   if (section.kind === 'links') {
     return (
       <section className={wrapper} id={section.id}>
-        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-12">
-          <SectionHeader section={section} center />
-          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8`}>
-            {section.items?.map((item) => (
-              <button
-                key={item.title}
-                type="button"
-                onClick={() => (item.route ? onNavigate(item.route) : scrollToId('bottom-form'))}
-                className="group text-left bg-white rounded-xl p-6 border border-[#e2e2e4] hover:border-[#c5a059] shadow-xs hover:shadow-md transition-all flex items-start justify-between gap-4 cursor-pointer"
-              >
-                <div>
-                  <h3 className="font-serif text-lg font-bold text-[#0f1e36] group-hover:text-[#775a19] transition-colors mb-1">
-                    {item.title}
-                  </h3>
-                  {item.text?.map((t) => (
-                    <p key={t} className="text-sm text-[#44474d] leading-relaxed">
-                      {t}
-                    </p>
-                  ))}
-                  {!item.route && <p className="text-xs text-[#775a19] mt-1">Request a consultation</p>}
-                </div>
-                <ChevronRight className="w-5 h-5 text-[#c5a059] shrink-0 mt-1 transition-transform group-hover:translate-x-1" />
-              </button>
-            ))}
+        <div className={inner}>
+          <div className="max-w-3xl">
+            <SectionHeader section={section} />
           </div>
-          <Outro section={section} center onNavigate={onNavigate} />
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 border-b border-[#d9dbe0]">
+            {section.items?.map((item) => (
+              <li key={item.title} className="border-t border-[#d9dbe0]">
+                <button
+                  type="button"
+                  onClick={() => (item.route ? onNavigate(item.route) : scrollToId('bottom-form'))}
+                  className="group w-full flex items-center justify-between gap-4 py-6 text-left cursor-pointer"
+                >
+                  <span>
+                    <span className="block font-serif text-[21px] text-[#0f1e36] group-hover:text-[#775a19] transition-colors">
+                      {item.title}
+                    </span>
+                    {!item.route && <span className="block text-[13px] text-[#5f6368] mt-1">Request a consultation</span>}
+                  </span>
+                  <ChevronRight className="w-5 h-5 text-[#775a19] shrink-0 transition-transform group-hover:translate-x-1" />
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8">
+            <Outro section={section} onNavigate={onNavigate} />
+          </div>
         </div>
       </section>
     );
   }
 
-  // cards
-  const count = section.items?.length ?? 0;
+  // cards: the layout was chosen per section by pickCardsVariants; the navy band always uses the list
+  const variant: CardsVariant = dark ? 'list' : cardsVariant;
   return (
     <section className={wrapper} id={section.id}>
-      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-12">
-          <div className="lg:col-span-7">
-            <SectionHeader section={section} dark={dark} />
-          </div>
-          <div className="lg:col-span-5">
-            <SectionImage src={image} alt={imageAlt} className="h-56 sm:h-72 lg:h-80" />
-          </div>
-        </div>
-        {section.bullets && !count && (
-          <div className="max-w-4xl mx-auto">
-            <BulletList bullets={section.bullets} dark={dark} columns />
-          </div>
+      <div className={inner}>
+        {variant === 'tabs' && <CardsTabs section={section} image={image} imageAlt={imageAlt} onNavigate={onNavigate} />}
+        {variant === 'cards' && <CardsGrid section={section} onNavigate={onNavigate} />}
+        {variant === 'index' && <CardsIndex section={section} onNavigate={onNavigate} />}
+        {variant === 'mosaic' && (
+          <CardsMosaic section={section} image={image} imageAlt={imageAlt} onNavigate={onNavigate} />
         )}
-        <div className={`grid grid-cols-1 ${gridCols(count)} gap-6 mb-8`}>
-          {section.items?.map((item) => (
-            <ItemCard key={item.title} item={item} dark={dark} onNavigate={onNavigate} />
-          ))}
-        </div>
-        {section.bullets && count > 0 && (
-          <div className="max-w-4xl mx-auto">
-            <BulletList bullets={section.bullets} dark={dark} columns />
-          </div>
+        {variant === 'list' && (
+          <CardsList section={section} image={image} imageAlt={imageAlt} dark={dark} onNavigate={onNavigate} />
         )}
-        <Outro section={section} dark={dark} center onNavigate={onNavigate} />
       </div>
     </section>
   );
 };
 
+
 /** Data-driven legal practice page: hero + intake form, content sections, FAQ, closing reservation section */
 export const ContentPage: React.FC<ContentPageProps> = ({ content, onNavigate }) => {
   const { hero, sections, faqs, closing } = content;
+  // Each card section gets a layout that fits its content, rotating so neighbouring sections differ
+  const cardsVariants = pickCardsVariants(sections);
 
   useEffect(() => {
     document.title = content.seo.title;
@@ -416,11 +724,24 @@ export const ContentPage: React.FC<ContentPageProps> = ({ content, onNavigate })
               <h1 className="font-serif text-3xl sm:text-4xl lg:text-[44px] lg:leading-[52px] font-bold text-white mb-4">{hero.title}</h1>
               {hero.subtitle && <p className="text-lg sm:text-xl text-[#e9c176] font-medium leading-relaxed mb-6">{hero.subtitle}</p>}
               <div className="space-y-3 text-sm sm:text-base text-[#edeef0] leading-relaxed max-w-2xl mb-8">
-                {hero.paragraphs.map((p) => (
-                  <p key={p}>
-                    <Rich text={p} />
-                  </p>
-                ))}
+                {groupHeroParagraphs(hero.paragraphs).map((block) =>
+                  Array.isArray(block) ? (
+                    <ul key={block[0]} className="space-y-1.5 pl-1">
+                      {block.map((li) => (
+                        <li key={li} className="flex items-start gap-3">
+                          <span aria-hidden="true" className="w-3 h-px mt-[0.75em] shrink-0 bg-[#e9c176]"></span>
+                          <span>
+                            <Rich text={li} />
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p key={block}>
+                      <Rich text={block} />
+                    </p>
+                  )
+                )}
               </div>
 
               <div className="flex flex-wrap items-center gap-3 mb-8">
@@ -462,6 +783,7 @@ export const ContentPage: React.FC<ContentPageProps> = ({ content, onNavigate })
           key={section.id}
           section={section}
           index={index}
+          cardsVariant={cardsVariants[index]}
           fallbackImage={SECTION_IMAGES[(routeOffset(content.route) + index) % SECTION_IMAGES.length]}
           onNavigate={onNavigate}
         />
@@ -469,15 +791,28 @@ export const ContentPage: React.FC<ContentPageProps> = ({ content, onNavigate })
 
       {/* FAQ */}
       {faqs.length > 0 && (
-        <section className="w-full bg-[#f3f3f5] py-16 lg:py-24 border-b border-[#e2e2e4]" id="faq">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6">
-            <div className="text-center mb-10">
-              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#775a19] block mb-2">
+        <section className="w-full bg-white py-20 lg:py-28 border-t border-[#e2e2e4]" id="faq">
+          <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+            <div className="lg:col-span-4 lg:sticky lg:top-28">
+              <span className="block text-[12px] font-semibold tracking-[0.08em] text-[#775a19] mb-3">
                 {content.faqEyebrow ?? 'FREQUENTLY ASKED QUESTIONS'}
               </span>
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#0f1e36]">{content.faqTitle ?? 'Frequently Asked Questions'}</h2>
+              <h2 className="font-serif font-normal text-[30px] sm:text-[38px] lg:text-[42px] leading-[1.15] tracking-[-0.01em] text-[#0f1e36] mb-5">
+                {content.faqTitle ?? 'Frequently Asked Questions'}
+              </h2>
+              <p className="text-[15px] leading-[1.75] text-[#44474d] mb-6">Can't find your answer? Ask us directly.</p>
+              <button
+                type="button"
+                onClick={() => scrollToId('bottom-form')}
+                className="inline-flex items-center gap-2.5 px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.06em] bg-[#0f1e36] text-white hover:bg-[#775a19] transition-colors cursor-pointer"
+              >
+                <span>Ask a Question</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
-            <FaqAccordion items={faqs} />
+            <div className="lg:col-span-8">
+              <FaqAccordion items={faqs} />
+            </div>
           </div>
         </section>
       )}

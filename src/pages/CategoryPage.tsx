@@ -2,6 +2,7 @@ import React from 'react';
 import { ServiceCategory } from '../data/servicesData';
 import { ConsultationForm } from '../components/ConsultationForm';
 import { ChevronRight, ArrowRight, ShieldCheck, Scale, CheckCircle, Clock } from 'lucide-react';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 interface CategoryPageProps {
   category: ServiceCategory;
@@ -67,7 +68,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ category, onNavigate
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-3.5 rounded-lg text-xs font-bold uppercase tracking-wider border border-[#c5a059]/40 hover:border-[#c5a059] transition-all duration-200"
                 >
-                  <span className="material-symbols-outlined text-[18px] text-[#fed488]">chat</span>
+                  <WhatsAppIcon className="w-[18px] h-[18px] text-[#fed488]" />
                   <span>WhatsApp Concierge</span>
                 </a>
               </div>
