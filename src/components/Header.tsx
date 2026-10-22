@@ -86,18 +86,10 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
           className="flex items-center gap-3 text-left focus:outline-none group cursor-pointer"
         >
           <img
-            alt="Caspani Lawyers Emblem"
-            className="h-9 w-auto object-contain transition-transform group-hover:scale-105"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZIPBpyzQBr2CDPrPBazVrZm3-x-zYmrz02TgNVC2YLNOl2MjWeXgFqSrzH0dVrK38Dv6YA_Lu-aB8lnXcjKjqKvJ9xDpmgbpvuZ-a_GUZmhzcrssV5WslbdaZwx3xvZ--h47LK2i2R4-NebnB1UBa8KgJpWCTbtTd9gQ72Nw4wqVlkVLBno-dtmutuq3Kln4xl08b3pjZxkkJbs93lxHMvu0NrkKbNu8pKQn02bLoS6u1I4dFL_xp"
+            alt="Caspani Lawyers"
+            className="h-16 w-auto object-contain transition-transform group-hover:scale-105"
+            src="/images/caspani-lawyers-logo.png"
           />
-          <div className="flex flex-col">
-            <span className="font-serif text-lg lg:text-xl font-bold uppercase tracking-wider text-[#000412] leading-none group-hover:text-[#775a19] transition-colors">
-              CASPANI LAWYERS
-            </span>
-            <span className="text-[10px] lg:text-[11px] font-semibold uppercase tracking-[0.2em] text-[#775a19] mt-1">
-              ADVOCACIA INTERNACIONAL
-            </span>
-          </div>
         </button>
 
         {/* Desktop Navigation Links in Template Colors */}
@@ -225,47 +217,28 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             )}
           </div>
 
-          {/* Who We Help */}
-          <button
-            onClick={() => handleNavClick('services')}
-            className="text-sm font-medium text-[#44474d] hover:text-[#775a19] transition-colors cursor-pointer flex items-center gap-1 py-2"
-          >
-            <span>Who We Help</span>
-            <ChevronRight className="w-3.5 h-3.5 text-[#75777e]" />
-          </button>
-
-          {/* Resources */}
-          <button
-            onClick={() => handleNavClick('subpage/real-estate/15-step-buying-guide')}
-            className="text-sm font-medium text-[#44474d] hover:text-[#775a19] transition-colors cursor-pointer flex items-center gap-1 py-2"
-          >
-            <span>Resources</span>
-            <ChevronRight className="w-3.5 h-3.5 text-[#75777e]" />
-          </button>
-
           {/* Our Firm */}
           <button
-            onClick={() => handleNavClick('our-firm')}
-            className={`text-sm font-medium transition-colors cursor-pointer flex items-center gap-1 py-2 ${
-              currentRoute === 'our-firm'
+            onClick={() => handleNavClick('about')}
+            className={`text-sm font-medium transition-colors cursor-pointer flex items-center py-2 ${
+              ['our-firm', 'about'].includes(currentRoute)
                 ? 'text-[#775a19] border-b-2 border-[#775a19] font-bold'
                 : 'text-[#44474d] hover:text-[#775a19]'
             }`}
           >
-            <span>Our Firm</span>
-            <ChevronRight className="w-3.5 h-3.5 text-[#75777e]" />
+            Our Firm
           </button>
 
-          {/* Contact */}
+          {/* Get a Consultation */}
           <button
-            onClick={() => handleNavClick('consultation')}
-            className={`text-sm font-medium transition-colors cursor-pointer py-2 ${
-              currentRoute === 'consultation'
+            onClick={() => handleNavClick('get-a-consultation')}
+            className={`text-sm font-medium transition-colors cursor-pointer flex items-center py-2 ${
+              ['get-a-consultation', 'consultation'].includes(currentRoute)
                 ? 'text-[#775a19] border-b-2 border-[#775a19] font-bold'
                 : 'text-[#44474d] hover:text-[#775a19]'
             }`}
           >
-            Contact
+            Get a Consultation
           </button>
         </nav>
 
@@ -283,7 +256,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
           </a>
 
           <button
-            onClick={() => handleNavClick('consultation')}
+            onClick={() => handleNavClick('get-a-consultation')}
             className="inline-flex items-center justify-center bg-[#fed488] text-[#785a1a] hover:bg-[#775a19] hover:text-white px-4 lg:px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors duration-200 shadow-sm cursor-pointer"
           >
             Get a Consultation
@@ -361,23 +334,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
           </div>
 
           <button
-            onClick={() => handleNavClick('services')}
-            className="w-full text-left py-2 text-sm font-medium text-[#0f1e36] border-b border-[#e8e8ea] flex items-center justify-between"
-          >
-            <span>Who We Help</span>
-            <ChevronRight className="w-4 h-4 text-[#75777e]" />
-          </button>
-
-          <button
-            onClick={() => handleNavClick('subpage/real-estate/15-step-buying-guide')}
-            className="w-full text-left py-2 text-sm font-medium text-[#0f1e36] border-b border-[#e8e8ea] flex items-center justify-between"
-          >
-            <span>Resources</span>
-            <ChevronRight className="w-4 h-4 text-[#75777e]" />
-          </button>
-
-          <button
-            onClick={() => handleNavClick('our-firm')}
+            onClick={() => handleNavClick('about')}
             className="w-full text-left py-2 text-sm font-medium text-[#0f1e36] border-b border-[#e8e8ea] flex items-center justify-between"
           >
             <span>Our Firm</span>
@@ -385,10 +342,10 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
           </button>
 
           <button
-            onClick={() => handleNavClick('consultation')}
+            onClick={() => handleNavClick('get-a-consultation')}
             className="w-full text-left py-2 text-sm font-medium text-[#0f1e36] border-b border-[#e8e8ea] flex items-center justify-between"
           >
-            <span>Contact</span>
+            <span>Get a Consultation</span>
             <ChevronRight className="w-4 h-4 text-[#75777e]" />
           </button>
 

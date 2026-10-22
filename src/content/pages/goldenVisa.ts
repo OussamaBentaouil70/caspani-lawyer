@@ -2,11 +2,9 @@ import type { PageContent } from '../types';
 
 // Source: 1-property-investor-visa-golden-visa.md
 export const goldenVisa: PageContent = {
-  "route": "services/real-estate/brazil-golden-visa",
+  "route": "services/immigration/property-investor-visa",
   "aliases": [
-    "subpage/brazil-immigration/property-investor-visa-golden-visa",
-    "subpage/real-estate/residency-by-investment-golden-visa",
-    "services/immigration/property-investor-visa"
+    "subpage/brazil-immigration/property-investor-visa-golden-visa"
   ],
   "seo": {
     "title": "Brazil Golden Visa | Caspani Lawyers",

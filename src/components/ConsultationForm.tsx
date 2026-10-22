@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, CheckCircle2, Lock, User, Mail, Phone, Scale, Globe, Languages, CalendarClock } from 'lucide-react';
+import { Send, CheckCircle2, User, Mail, Phone, Scale, Globe, Languages, CalendarClock } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface ConsultationFormProps {
@@ -61,7 +61,7 @@ const LEGAL_MATTERS = [
   'Other'
 ];
 
-const LANGUAGES = ['English', 'Portuguese', 'Spanish', 'Italian', 'French', 'Arabic (with interpreter)'];
+const LANGUAGES = ['English', 'Portuguese', 'Spanish', 'Italian', 'French', 'Arabic with interpreter'];
 
 const inputClass =
   'w-full bg-[#f3f3f5] pl-9 pr-3 py-2.5 rounded-lg border border-[#c5c6ce] text-sm text-[#1a1c1d] placeholder:text-[#75777e] focus:outline-none focus:border-[#775a19] focus:bg-white transition-colors';
@@ -90,7 +90,6 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
     message: '',
     availability: '',
     extra: '',
-    consent: false
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -168,9 +167,6 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
           </div>
           <p className="text-xs text-[#44474d]">{subtitle}</p>
         </div>
-        <span className="bg-[#edeef0] text-[#775a19] px-2.5 py-1 rounded text-[11px] font-mono font-semibold uppercase tracking-wider border border-[#c5a059]/30 shrink-0">
-          OAB/PR 58.420
-        </span>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -248,7 +244,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="WhatsApp number"
+                placeholder="Include country code"
                 className={inputClass}
               />
             </div>
@@ -269,7 +265,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
                   type="text"
                   value={formData.country}
                   onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                  placeholder="Your country"
+                  placeholder="Select your country"
                   className={inputClass}
                 />
               </div>
@@ -387,20 +383,6 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
           </div>
         )}
 
-        <label className="flex items-start gap-2.5 text-xs text-[#44474d] leading-relaxed cursor-pointer" htmlFor={`${id}-consent`}>
-          <input
-            id={`${id}-consent`}
-            required
-            type="checkbox"
-            checked={formData.consent}
-            onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
-            className="mt-0.5 w-4 h-4 accent-[#775a19] shrink-0"
-          />
-          <span>
-            I understand that legal consultations are paid and that submitting this form does not establish an attorney-client relationship. *
-          </span>
-        </label>
-
         <button
           type="submit"
           className="w-full bg-[#fed488] hover:bg-[#775a19] text-[#785a1a] hover:text-white font-semibold text-xs uppercase tracking-wider py-3.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
@@ -408,13 +390,6 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
           <span>Submit Consultation Request</span>
           <Send className="w-4 h-4" />
         </button>
-
-        <div className="flex items-start justify-center gap-1.5 pt-1 text-center">
-          <Lock className="w-3.5 h-3.5 text-[#775a19] shrink-0 mt-0.5" />
-          <p className="text-[11px] text-[#44474d]">
-            Please do not submit confidential documents or sensitive personal information through this initial form.
-          </p>
-        </div>
       </form>
     </div>
   );

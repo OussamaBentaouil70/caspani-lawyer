@@ -30,6 +30,22 @@ const SECTION_IMAGES: [string, string][] = [
   ['/images/team-portrait.jpg', 'The Caspani Lawyers team']
 ];
 
+/** Overview photos per practice area (first matching route fragment wins); pages in one area rotate through its set */
+const OVERVIEW_IMAGES: [RegExp, [string, string][]][] = [
+  [/paraguay/, [['/images/paraguay-immigration.jpg', 'Paraguay'], ['/images/international-legal-services.jpg', 'International legal services']]],
+  [/us-europe|international-immigration/, [['/images/us-europe-immigration.jpg', 'International immigration'], ['/images/portugal-immigration.jpg', 'Europe']]],
+  [/brazilian-citizenship/, [['/images/recognition-passport.jpg', 'Brazilian passport on a world map'], ['/images/brazil-immigration.jpg', 'Brazilian flag'], ['/images/desk-passport.jpg', 'Brazilian passport and law books']]],
+  [/immigration/, [['/images/brazil-immigration.jpg', 'Brazilian flag'], ['/images/desk-passport.jpg', 'Brazilian passport and law books'], ['/images/recognition-passport.jpg', 'Brazilian passport on a world map']]],
+  [/real-estate/, [['/images/real-estate.jpg', 'Brazilian real estate'], ['/images/estate-planning.jpg', 'Model house and property documents'], ['/images/services-desk.jpg', 'Law office desk']]],
+  [/banking|money/, [['/images/banking-money-transfers.jpg', 'International money transfers'], ['/images/international-legal-services.jpg', 'International legal services']]],
+  [/estate-planning/, [['/images/estate-planning.jpg', 'Estate planning documents'], ['/images/office-documents.jpg', 'Attorney reviewing documents']]],
+  [/inheritance/, [['/images/inheritance-probate.jpg', 'Family together'], ['/images/home-justice.jpg', 'Lady Justice statue in a law library']]],
+  [/cross-border|notary/, [['/images/recognition-passport.jpg', 'Brazilian passport on a world map'], ['/images/international-legal-services.jpg', 'International legal services'], ['/images/erica-courthouse.jpg', 'Erica Montarini Gaspani outside a courthouse']]],
+  [/collection/, [['/images/debt-collection.jpg', 'Debt recovery documents'], ['/images/office-documents.jpg', 'Attorney reviewing documents']]],
+  [/litigation|personal-injury/, [['/images/litigation.jpg', 'Judge gavel'], ['/images/home-justice.jpg', 'Lady Justice statue in a law library'], ['/images/erica-courthouse.jpg', 'Erica Montarini Gaspani outside a courthouse']]],
+  [/business-law|tax/, [['/images/services-desk.jpg', 'Law books and globe in a law office'], ['/images/legal-services.jpg', 'Scales of justice']]]
+];
+
 const routeOffset = (route: string) => [...route].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % SECTION_IMAGES.length;
 
 /** Photo with an offset navy block behind it — the one repeated signature element of the content sections */
@@ -82,6 +98,125 @@ const groupHeroParagraphs = (paragraphs: string[]): (string | string[])[] =>
     }
     return [...blocks, [p.slice(2)]];
   }, []);
+
+/**
+ * Long hero copy is split: the hero keeps a short lead (the tagline, or the first paragraph) next to the form,
+ * and the rest of the copy moves to the Overview section below the hero. Short heroes keep all their copy.
+ */
+const splitHeroCopy = (paragraphs: string[]) => {
+  const blocks = groupHeroParagraphs(paragraphs);
+  if (blocks.length <= 3) return { lead: blocks, overview: [] as (string | string[])[] };
+  const first = blocks[0];
+  const isTagline = typeof first === 'string' && first.length <= 140 && !/\.$/.test(first);
+  return { lead: [first], overview: blocks.slice(1), isTagline };
+};
+
+const Paragraphs: React.FC<{ blocks: (string | string[])[]; dark?: boolean }> = ({ blocks, dark }) => (
+  <>
+    {blocks.map((block) =>
+      Array.isArray(block) ? (
+        <ul key={block[0]} className="space-y-1.5 pl-1">
+          {block.map((li) => (
+            <li key={li} className="flex items-start gap-3">
+              <span aria-hidden="true" className={`w-3 h-px mt-[0.75em] shrink-0 ${dark ? 'bg-[#e9c176]' : 'bg-[#775a19]'}`}></span>
+              <span>
+                <Rich text={li} />
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p key={block}>
+          <Rich text={block} />
+        </p>
+      )
+    )}
+  </>
+);
+
+/** A practice-area photo for the Overview that the page's opening sections do not already show */
+const pickOverviewImage = (content: PageContent): [string, string] => {
+  const set = OVERVIEW_IMAGES.find(([re]) => re.test(content.route))?.[1] ?? SECTION_IMAGES;
+  const nearby = new Set(content.sections.slice(0, 3).map((s) => s.image));
+  const fresh = set.filter(([src]) => !nearby.has(src));
+  const pool = fresh.length ? fresh : set;
+  const hash = [...content.route].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+  return pool[hash % pool.length];
+};
+
+/** The hero copy that does not fit next to the form, laid out for reading */
+const HeroOverview: React.FC<{ blocks: (string | string[])[]; image: [string, string]; area?: string }> = ({ blocks, image, area }) => {
+  // The firm's own paragraphs ("At Caspani Lawyers…" and what follows) form a "How we help" panel;
+  // a short final line closes the overview as a sign-off.
+  const last = blocks[blocks.length - 1];
+  const closing = typeof last === 'string' && last.length <= 180 ? last : undefined;
+  const body = closing ? blocks.slice(0, -1) : blocks;
+  const firmAt = body.findIndex((b) => typeof b === 'string' && /^At Caspani Lawyers/i.test(b));
+  const intro = firmAt >= 0 ? body.slice(0, firmAt) : body;
+  const firm = firmAt >= 0 ? body.slice(firmAt) : [];
+  return (
+    <section id="overview" className="w-full bg-[#f4f5f7] py-16 lg:py-24">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          <aside className="lg:col-span-5 order-2 lg:order-1">
+            <div className="lg:sticky lg:top-28 relative mr-5 mb-5">
+              <div aria-hidden="true" className="absolute -bottom-5 -left-5 w-2/3 h-2/3 bg-[#0f1e36]"></div>
+              <figure className="relative">
+                <img
+                  src={image[0]}
+                  alt={image[1]}
+                  className="w-full h-72 sm:h-96 lg:h-[520px] object-cover object-[center_25%]"
+                  loading="lazy"
+                />
+                {area && (
+                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0f1e36]/95 via-[#0f1e36]/70 to-transparent px-6 pt-16 pb-5">
+                    <span aria-hidden="true" className="block w-8 h-px bg-[#e9c176] mb-3"></span>
+                    <span className="block text-[12px] font-semibold tracking-[0.12em] uppercase text-[#e9c176]">{area}</span>
+                  </figcaption>
+                )}
+              </figure>
+            </div>
+          </aside>
+          <div className="lg:col-span-7 order-1 lg:order-2 max-w-[68ch]">
+            <span className="block text-[12px] font-semibold tracking-[0.08em] text-[#775a19] mb-3">OVERVIEW</span>
+            <span aria-hidden="true" className="block w-12 h-px bg-[#775a19] mb-8"></span>
+            <div className="space-y-4 text-[16px] leading-[1.8] text-[#44474d]">
+              {intro.map((block, i) =>
+                typeof block === 'string' && /\?$/.test(block) ? (
+                  <blockquote
+                    key={block}
+                    className="border-l-2 border-[#775a19] pl-5 py-1 my-6 font-serif text-[20px] sm:text-[22px] leading-snug text-[#0f1e36]"
+                  >
+                    <Rich text={block} />
+                  </blockquote>
+                ) : i === 0 && typeof block === 'string' ? (
+                  <p key={block} className="text-[18px] sm:text-[19px] leading-[1.7] text-[#1a1c1d]">
+                    <Rich text={block} />
+                  </p>
+                ) : (
+                  <Paragraphs key={typeof block === 'string' ? block : block[0]} blocks={[block]} />
+                )
+              )}
+            </div>
+            {firm.length > 0 && (
+              <div className="mt-10 bg-white border border-[#e2e2e4] border-t-2 border-t-[#775a19] p-6 sm:p-8 shadow-sm">
+                <span className="block text-[12px] font-semibold tracking-[0.08em] text-[#775a19] mb-3">HOW WE HELP</span>
+                <div className="space-y-4 text-[15px] leading-[1.75] text-[#44474d]">
+                  <Paragraphs blocks={firm} />
+                </div>
+              </div>
+            )}
+            {closing && (
+              <p className="mt-8 font-serif text-[20px] leading-snug text-[#0f1e36]">
+                <Rich text={closing} />
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -558,6 +693,67 @@ const Section: React.FC<{
   const wrapper = `w-full ${bg} py-20 lg:py-28`;
   const inner = 'max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-12';
 
+  // A heading with no body of its own introduces the sections that follow it
+  const headingOnly =
+    section.kind === 'text' && !section.intro && !section.items && !section.bullets && !section.outro && !section.table && !section.cta;
+  if (headingOnly) {
+    return (
+      <section className={`w-full ${(index + 1) % 2 === 0 ? 'bg-white' : 'bg-[#f4f5f7]'} pt-20 pb-0 lg:pt-28`} id={section.id}>
+        <div className={`${inner} text-center`}>
+          {section.eyebrow && (
+            <span className="block text-[12px] font-semibold tracking-[0.08em] text-[#775a19] mb-3">{section.eyebrow}</span>
+          )}
+          {section.title && <h2 className={`${TITLE} text-[#0f1e36]`}>{section.title}</h2>}
+          <span aria-hidden="true" className="block w-12 h-px bg-[#775a19] mx-auto mt-6"></span>
+        </div>
+      </section>
+    );
+  }
+
+  if (section.kind === 'text' && section.layout === 'plain') {
+    const longList = (section.bullets?.length ?? 0) > 6;
+    return (
+      <section className={wrapper} id={section.id}>
+        <div className={inner}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 border-t-2 border-[#775a19] pt-10">
+            <div className="lg:col-span-4">
+              {section.eyebrow && (
+                <span className="block text-[12px] font-semibold tracking-[0.08em] text-[#775a19] mb-3">{section.eyebrow}</span>
+              )}
+              {section.title && (
+                <h2 className="font-serif font-normal text-[28px] sm:text-[32px] leading-[1.18] tracking-[-0.01em] text-[#0f1e36]">
+                  {section.title}
+                </h2>
+              )}
+            </div>
+            <div className="lg:col-span-8">
+              {section.intro?.map((p) => (
+                <p key={p} className={`${BODY} max-w-[68ch] mb-3 text-[#44474d]`}>
+                  <Rich text={p} />
+                </p>
+              ))}
+              {section.table && <SectionTable table={section.table} />}
+              {section.items?.map((item) => (
+                <div key={item.title} className="mt-6">
+                  <h3 className="font-serif font-normal text-[21px] leading-snug text-[#0f1e36] mb-2">
+                    <Rich text={item.title} />
+                  </h3>
+                  <ItemBody item={item} onNavigate={onNavigate} />
+                </div>
+              ))}
+              {section.bullets && (
+                <div className="mt-4">
+                  <BulletList bullets={section.bullets} columns={longList} />
+                </div>
+              )}
+              <Outro section={section} onNavigate={onNavigate} />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (section.kind === 'text') {
     const imageLeft = index % 4 === 0;
     return (
@@ -685,6 +881,7 @@ export const ContentPage: React.FC<ContentPageProps> = ({ content, onNavigate })
   const { hero, sections, faqs, closing } = content;
   // Each card section gets a layout that fits its content, rotating so neighbouring sections differ
   const cardsVariants = pickCardsVariants(sections);
+  const heroCopy = splitHeroCopy(hero.paragraphs);
 
   useEffect(() => {
     document.title = content.seo.title;
@@ -723,30 +920,23 @@ export const ContentPage: React.FC<ContentPageProps> = ({ content, onNavigate })
             <div className="lg:col-span-7 flex flex-col items-start">
               <h1 className="font-serif text-3xl sm:text-4xl lg:text-[44px] lg:leading-[52px] font-bold text-white mb-4">{hero.title}</h1>
               {hero.subtitle && <p className="text-lg sm:text-xl text-[#e9c176] font-medium leading-relaxed mb-6">{hero.subtitle}</p>}
-              <div className="space-y-3 text-sm sm:text-base text-[#edeef0] leading-relaxed max-w-2xl mb-8">
-                {groupHeroParagraphs(hero.paragraphs).map((block) =>
-                  Array.isArray(block) ? (
-                    <ul key={block[0]} className="space-y-1.5 pl-1">
-                      {block.map((li) => (
-                        <li key={li} className="flex items-start gap-3">
-                          <span aria-hidden="true" className="w-3 h-px mt-[0.75em] shrink-0 bg-[#e9c176]"></span>
-                          <span>
-                            <Rich text={li} />
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p key={block}>
-                      <Rich text={block} />
-                    </p>
-                  )
-                )}
+              <div
+                className={`space-y-3 leading-relaxed max-w-2xl mb-8 ${
+                  heroCopy.isTagline ? 'font-serif text-xl sm:text-2xl text-white' : 'text-sm sm:text-base text-[#edeef0]'
+                }`}
+              >
+                <Paragraphs blocks={heroCopy.lead} dark />
               </div>
 
               <div className="flex flex-wrap items-center gap-3 mb-8">
                 {hero.ctas[0] && <CtaButton label={hero.ctas[0]} target="hero-form" variant="gold" />}
-                {hero.ctas[1] && <CtaButton label={hero.ctas[1]} target={sections[0]?.id ?? 'bottom-form'} variant="ghost" />}
+                {hero.ctas[1] && (
+                  <CtaButton
+                    label={hero.ctas[1]}
+                    target={heroCopy.overview.length ? 'overview' : sections[0]?.id ?? 'bottom-form'}
+                    variant="ghost"
+                  />
+                )}
               </div>
 
               {hero.badges.length > 0 && (
@@ -776,6 +966,8 @@ export const ContentPage: React.FC<ContentPageProps> = ({ content, onNavigate })
           </div>
         </div>
       </section>
+
+      {heroCopy.overview.length > 0 && <HeroOverview blocks={heroCopy.overview} image={pickOverviewImage(content)} area={content.breadcrumb[1]?.label} />}
 
       {/* CONTENT SECTIONS */}
       {sections.map((section, index) => (

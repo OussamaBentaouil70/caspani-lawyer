@@ -927,22 +927,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   className="w-full h-80 lg:h-96 object-cover"
                   src="/images/brazil-immigration.jpg"
                 />
-                <div className="absolute bottom-4 left-4 right-4 bg-[#0f1e36]/90 backdrop-blur-md text-white p-4 rounded-xl border border-[#c5a059]/30 shadow-lg flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#fed488] text-[24px]">location_city</span>
-                    <div>
-                      <span className="text-[10px] uppercase tracking-wider text-[#fed488] block">
-                        Cross-Border Gateway
-                      </span>
-                      <span className="font-serif text-sm font-bold">
-                        Curitiba • Rio de Janeiro • São Paulo
-                      </span>
-                    </div>
-                  </div>
-                  <span className="text-[11px] font-mono bg-white/20 px-2.5 py-1 rounded text-[#edeef0]">
-                    Full National Coverage
-                  </span>
-                </div>
+                <span className="absolute bottom-4 left-4 text-[11px] font-mono bg-[#0f1e36]/90 backdrop-blur-md border border-[#c5a059]/30 px-3 py-1.5 rounded-lg text-[#edeef0] shadow-lg">
+                  Full National Coverage
+                </span>
               </div>
 
               {/* Quick WhatsApp Inquiry Box */}

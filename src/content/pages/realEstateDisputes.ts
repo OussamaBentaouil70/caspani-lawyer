@@ -2,7 +2,7 @@ import type { PageContent } from '../types';
 
 // Source: 1-real-estate-disputes.md
 export const realEstateDisputes: PageContent = {
-  "route": "services/real-estate/brazil-real-estate-litigation",
+  "route": "services/real-estate/real-estate-disputes",
   "aliases": [
     "subpage/real-estate/real-estate-disputes"
   ],

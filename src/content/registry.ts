@@ -45,6 +45,40 @@ import { localProbateAttorney } from './pages/localProbateAttorney';
 import { inheritanceDisputes } from './pages/inheritanceDisputes';
 import { forcedHeirship } from './pages/forcedHeirship';
 import { searchWills } from './pages/searchWills';
+import { crossBorderHub } from './pages/crossBorderHub';
+import { foreignDivorce } from './pages/foreignDivorce';
+import { foreignMarriage } from './pages/foreignMarriage';
+import { foreignJudgment } from './pages/foreignJudgment';
+import { serviceOfProcess } from './pages/serviceOfProcess';
+import { arbitralAward } from './pages/arbitralAward';
+import { lettersRogatory } from './pages/lettersRogatory';
+import { litigationHub } from './pages/litigationHub';
+import { businessLitigation } from './pages/businessLitigation';
+import { realEstateLitigation } from './pages/realEstateLitigation';
+import { inheritanceDisputesLitigation } from './pages/inheritanceDisputesLitigation';
+import { consumerDefense } from './pages/consumerDefense';
+import { internationalArbitration } from './pages/internationalArbitration';
+import { mediation } from './pages/mediation';
+import { personalInjury } from './pages/personalInjury';
+import { debtCollectionHub } from './pages/debtCollectionHub';
+import { statuteOfLimitations } from './pages/statuteOfLimitations';
+import { consumerCommercialCollection } from './pages/consumerCommercialCollection';
+import { officialProtest } from './pages/officialProtest';
+import { contingencyFee } from './pages/contingencyFee';
+import { paraguayHub } from './pages/paraguayHub';
+import { paraguayResidency } from './pages/paraguayResidency';
+import { paraguayInvestorPass } from './pages/paraguayInvestorPass';
+import { paraguayCompanyFormation } from './pages/paraguayCompanyFormation';
+import { paraguayMergers } from './pages/paraguayMergers';
+import { paraguayTaxAdvisory } from './pages/paraguayTaxAdvisory';
+import { paraguayMaquila } from './pages/paraguayMaquila';
+import { paraguayTenders } from './pages/paraguayTenders';
+import { usEuropeImmigration } from './pages/usEuropeImmigration';
+import { internationalContracts } from './pages/internationalContracts';
+import { taxServices } from './pages/taxServices';
+import { goldenVisaRealEstate } from './pages/goldenVisaRealEstate';
+import { fgtsWithdrawal } from './pages/fgtsWithdrawal';
+import { bankAccountService } from './pages/bankAccountService';
 
 const PAGES: PageContent[] = [
   immigrationHub,
@@ -92,7 +126,41 @@ const PAGES: PageContent[] = [
   localProbateAttorney,
   inheritanceDisputes,
   forcedHeirship,
-  searchWills
+  searchWills,
+  crossBorderHub,
+  foreignDivorce,
+  foreignMarriage,
+  foreignJudgment,
+  serviceOfProcess,
+  arbitralAward,
+  lettersRogatory,
+  litigationHub,
+  businessLitigation,
+  realEstateLitigation,
+  inheritanceDisputesLitigation,
+  consumerDefense,
+  internationalArbitration,
+  mediation,
+  personalInjury,
+  debtCollectionHub,
+  statuteOfLimitations,
+  consumerCommercialCollection,
+  officialProtest,
+  contingencyFee,
+  paraguayHub,
+  paraguayResidency,
+  paraguayInvestorPass,
+  paraguayCompanyFormation,
+  paraguayMergers,
+  paraguayTaxAdvisory,
+  paraguayMaquila,
+  paraguayTenders,
+  usEuropeImmigration,
+  internationalContracts,
+  taxServices,
+  goldenVisaRealEstate,
+  fgtsWithdrawal,
+  bankAccountService
 ];
 
 const BY_ROUTE = new Map<string, PageContent>();

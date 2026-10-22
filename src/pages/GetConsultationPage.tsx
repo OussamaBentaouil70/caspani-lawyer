@@ -81,12 +81,14 @@ export const GetConsultationPage: React.FC<GetConsultationPageProps> = ({ onNavi
       {/* 1. HERO */}
       <section className="relative w-full bg-[#0f1e36] text-white py-14 lg:py-20 overflow-hidden">
         <img
-          src="/images/legal-services.jpg"
+          src="/images/hero-rio.jpg"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0f1e36] via-[#0f1e36]/90 to-[#0f1e36]/60 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0f1e36]/95 via-[#0f1e36]/85 to-[#0f1e36]/55 pointer-events-none"></div>
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#775a19]/20 blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-[#e9c176]/10 blur-[100px] pointer-events-none"></div>
 
         <div className="relative max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="max-w-3xl">

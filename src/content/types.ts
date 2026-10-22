@@ -48,6 +48,8 @@ export interface ContentSection {
   ctaRoute?: string;
   image?: string;
   imageAlt?: string;
+  /** 'plain': a text section without a photo (heading on the left, text on the right) */
+  layout?: 'plain';
 }
 
 export interface PageContent {

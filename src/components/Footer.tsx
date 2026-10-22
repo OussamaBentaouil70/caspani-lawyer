@@ -14,34 +14,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
           {/* Col 1: Emblem & Firm Bio */}
           <div className="lg:col-span-5 flex flex-col items-start">
-            <div className="flex items-center gap-3 mb-4">
-              <img
-                alt="Caspani Lawyers Emblem"
-                className="h-8 w-auto object-contain"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZIPBpyzQBr2CDPrPBazVrZm3-x-zYmrz02TgNVC2YLNOl2MjWeXgFqSrzH0dVrK38Dv6YA_Lu-aB8lnXcjKjqKvJ9xDpmgbpvuZ-a_GUZmhzcrssV5WslbdaZwx3xvZ--h47LK2i2R4-NebnB1UBa8KgJpWCTbtTd9gQ72Nw4wqVlkVLBno-dtmutuq3Kln4xl08b3pjZxkkJbs93lxHMvu0NrkKbNu8pKQn02bLoS6u1I4dFL_xp"
-              />
-              <div className="flex flex-col">
-                <span className="font-serif text-lg font-bold uppercase text-[#000412]">
-                  CASPANI LAWYERS
-                </span>
-                <span className="text-[10px] font-semibold uppercase text-[#775a19] tracking-[0.2em]">
-                  ADVOCACIA INTERNACIONAL
-                </span>
-              </div>
+            <div className="mb-5">
+              <img alt="Caspani Lawyers" className="h-24 w-auto object-contain" src="/images/caspani-lawyers-logo.png" />
             </div>
 
             <p className="text-xs sm:text-sm text-[#44474d] leading-relaxed max-w-md mb-6">
               Caspani Lawyers | Advocacia Internacional provides personalized legal services to foreign individuals, international families, entrepreneurs and investors navigating legal matters in Brazil. Brazilian Legal Expertise. International Perspective. Personalized Service.
             </p>
-
-            <div className="flex flex-wrap gap-2 text-xs font-mono text-[#0f1e36]">
-              <span className="bg-white border border-[#c5a059]/40 px-3 py-1 rounded shadow-xs font-semibold">
-                OAB/PR 58.420
-              </span>
-              <span className="bg-white border border-[#c5a059]/40 px-3 py-1 rounded shadow-xs font-semibold">
-                CRECI-PR F57569
-              </span>
-            </div>
           </div>
 
           {/* Col 2: Practice Groups Quick Nav */}
@@ -126,11 +105,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             © {new Date().getFullYear()} Caspani Lawyers – Advocacia Internacional. All rights reserved. Registered under Brazilian Federal Bar Association (OAB/PR 58.420).
           </p>
           <div className="flex items-center gap-4">
-            <button onClick={() => onNavigate('our-firm')} className="hover:text-[#0f1e36] transition-colors cursor-pointer">
+            <button onClick={() => onNavigate('about')} className="hover:text-[#0f1e36] transition-colors cursor-pointer">
               Our Firm
             </button>
             <span className="text-gray-300">•</span>
-            <button onClick={() => onNavigate('consultation')} className="hover:text-[#0f1e36] transition-colors cursor-pointer">
+            <button onClick={() => onNavigate('get-a-consultation')} className="hover:text-[#0f1e36] transition-colors cursor-pointer">
               Schedule Consultation
             </button>
             <span className="text-gray-300">•</span>
