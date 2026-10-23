@@ -7,6 +7,7 @@ import { CategoryPage } from './pages/CategoryPage';
 import { SubpageTemplate } from './components/SubpageTemplate';
 import { OurFirmPage } from './pages/OurFirmPage';
 import { GetConsultationPage } from './pages/GetConsultationPage';
+import { ThankYouPage } from './pages/ThankYouPage';
 import { ContentPage } from './components/ContentPage';
 import { findContentPage } from './content/registry';
 import { SERVICES_DATA, findCategoryBySlug, findSubpageBySlugs } from './data/servicesData';
@@ -35,6 +36,9 @@ export default function App() {
       const hash = window.location.hash.replace(/^#\/?/, '');
       if (hash) {
         setCurrentRoute(hash);
+      } else if (window.location.pathname.replace(/\/+$/, '') === '/thank-you') {
+        // The consultation form sends people to the real path /thank-you (served by public/.htaccess on Hostinger)
+        setCurrentRoute('thank-you');
       } else {
         setCurrentRoute('home');
       }
@@ -60,6 +64,10 @@ export default function App() {
 
   const handleNavigate = (route: string) => {
     setCurrentRoute(route);
+    // Leaving /thank-you: return to the site root so the address does not become /thank-you#/home
+    if (window.location.pathname !== '/') {
+      window.history.replaceState(null, '', '/');
+    }
     window.location.hash = `#/${route}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -80,6 +88,10 @@ export default function App() {
 
     if (currentRoute === 'our-firm' || currentRoute === 'about' || currentRoute === 'about/') {
       return <OurFirmPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentRoute === 'thank-you') {
+      return <ThankYouPage onNavigate={handleNavigate} />;
     }
 
     if (

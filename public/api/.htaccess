@@ -1,0 +1,12 @@
+# Only send.php is meant to be reached from the browser; settings and package files stay private.
+Options -Indexes
+
+<FilesMatch "^\.|\.(env|example|json|lock|md|txt|log)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>

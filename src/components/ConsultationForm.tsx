@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, CheckCircle2, User, Mail, Phone, Scale, Globe, Languages, CalendarClock } from 'lucide-react';
+import { Send, User, Mail, Phone, Scale, Globe, Languages, CalendarClock, Loader2, AlertCircle } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
 
 interface ConsultationFormProps {
@@ -92,16 +92,55 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
     extra: '',
   });
 
-  const [submitted, setSubmitted] = useState(false);
+  // Hidden field that only spam bots fill in (checked by api/send.php)
+  const [website, setWebsite] = useState('');
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
 
   // A preset coming from a page that is not in the standard list still needs a matching option
   const presetIsListed =
     !presetService ||
     (isFull ? LEGAL_MATTERS : SERVICE_GROUPS.flatMap((g) => g.options)).includes(presetService);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  /** Sends the request to api/send.php (admin notification + client thank-you email), then opens /thank-you */
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSending(true);
+    setError('');
+    try {
+      const response = await fetch('/api/send.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          country: isFull ? formData.country : '',
+          language: isFull ? formData.language : '',
+          availability: isFull ? formData.availability : '',
+          extraLabel: extraField?.label ?? '',
+          formTitle: title,
+          page: window.location.href,
+          pageTitle: document.title,
+          website
+        })
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok || !result?.ok) {
+        throw new Error(result?.error || 'We could not send your request. Please try again or contact us on WhatsApp.');
+      }
+      try {
+        sessionStorage.setItem('caspani-consultation', JSON.stringify({ name: formData.fullName, email: formData.email }));
+      } catch {
+        // Private mode: the thank-you page simply shows its generic greeting
+      }
+      window.location.assign('/thank-you');
+    } catch (err) {
+      setError(
+        err instanceof TypeError
+          ? 'We could not reach our server. Please check your connection, try again, or contact us on WhatsApp.'
+          : (err as Error).message
+      );
+      setSending(false);
+    }
   };
 
   const handleWhatsAppRedirect = () => {
@@ -118,44 +157,6 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
     const text = encodeURIComponent(lines.join('\n'));
     window.open(`https://wa.me/5541998247700?text=${text}`, '_blank');
   };
-
-  if (submitted) {
-    return (
-      <div className="bg-white text-[#1a1c1d] rounded-xl p-6 lg:p-8 shadow-2xl border border-[#c5a059]/40 text-center animate-fadeIn">
-        <div className="w-16 h-16 rounded-full bg-[#f3ede0] text-[#775a19] mx-auto flex items-center justify-center mb-4">
-          <CheckCircle2 className="w-9 h-9 text-[#775a19]" />
-        </div>
-        <h3 className="font-serif text-2xl font-bold text-[#0f1e36] mb-2">One Last Step</h3>
-        <p className="text-[#44474d] text-sm leading-relaxed mb-6">
-          Thank you, <strong className="text-[#0f1e36]">{formData.fullName}</strong>. Send your request to our office via WhatsApp below. We will reply with appointment availability, professional fees and payment instructions.
-        </p>
-
-        <div className="p-4 bg-[#f9f9fb] rounded-lg border border-[#e2e2e4] mb-6 text-left text-xs text-[#44474d] space-y-1">
-          <p><strong className="text-[#0f1e36]">Legal Matter:</strong> {formData.service || 'Brazilian Legal Consultation'}</p>
-          <p><strong className="text-[#0f1e36]">WhatsApp:</strong> {formData.countryCode} {formData.phone}</p>
-          <p><strong className="text-[#0f1e36]">Email:</strong> {formData.email}</p>
-        </div>
-
-        <div className="space-y-3">
-          <button
-            onClick={handleWhatsAppRedirect}
-            type="button"
-            className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-semibold text-xs uppercase tracking-wider py-3.5 px-4 rounded-lg shadow-md transition-all flex items-center justify-center gap-2"
-          >
-            <WhatsAppIcon className="w-[18px] h-[18px]" />
-            <span>Send My Request via WhatsApp</span>
-          </button>
-          <button
-            onClick={() => setSubmitted(false)}
-            type="button"
-            className="text-xs text-[#775a19] hover:underline"
-          >
-            Edit My Request
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div id={id} className={`bg-white text-[#1a1c1d] rounded-xl ${compact ? 'p-5' : 'p-6 lg:p-8'} shadow-2xl border border-[#c5a059]/30 relative`}>
@@ -383,12 +384,52 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
           </div>
         )}
 
+        {/* Spam trap: hidden from people and screen readers, filled in only by bots */}
+        <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+          <label htmlFor={`${id}-website`}>Website</label>
+          <input
+            id={`${id}-website`}
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+          />
+        </div>
+
+        {error && (
+          <div role="alert" className="rounded-lg border border-[#e8b4b4] bg-[#fdf3f3] p-3.5 text-xs text-[#8a2c2c] leading-relaxed">
+            <p className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-px" />
+              <span>{error}</span>
+            </p>
+            <button
+              type="button"
+              onClick={handleWhatsAppRedirect}
+              className="mt-3 inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white font-semibold uppercase tracking-wider px-3.5 py-2 rounded-md transition-colors"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+              <span>Send via WhatsApp instead</span>
+            </button>
+          </div>
+        )}
+
         <button
           type="submit"
-          className="w-full bg-[#fed488] hover:bg-[#775a19] text-[#785a1a] hover:text-white font-semibold text-xs uppercase tracking-wider py-3.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+          disabled={sending}
+          className="w-full bg-[#fed488] hover:bg-[#775a19] text-[#785a1a] hover:text-white font-semibold text-xs uppercase tracking-wider py-3.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-wait"
         >
-          <span>Submit Consultation Request</span>
-          <Send className="w-4 h-4" />
+          {sending ? (
+            <>
+              <span>Sending…</span>
+              <Loader2 className="w-4 h-4 animate-spin" />
+            </>
+          ) : (
+            <>
+              <span>Submit Consultation Request</span>
+              <Send className="w-4 h-4" />
+            </>
+          )}
         </button>
       </form>
     </div>

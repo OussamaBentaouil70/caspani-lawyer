@@ -17,6 +17,11 @@ export default defineConfig(() => {
       hmr: process.env.DISABLE_HMR !== 'true',
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
+      // The consultation form posts to /api/send.php. Vite cannot run PHP, so during development
+      // run `npm run dev:php` (PHP's built-in server on port 8000) and these requests are forwarded to it.
+      proxy: {
+        '/api': 'http://localhost:8000',
+      },
     },
   };
 });

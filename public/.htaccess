@@ -1,0 +1,15 @@
+# Hostinger (Apache / LiteSpeed) rules for the built site in public_html.
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Real files and folders (assets, images, api/send.php) are served as they are
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Every other address (e.g. /thank-you) is handled by the single-page app
+  RewriteRule ^ index.html [L]
+</IfModule>
